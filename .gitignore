@@ -1,1 +1,15 @@
 /target
+.DS_Store
+620-wiki.xml.bz2
+base.jsonl
+Cargo.lock
+data.json
+data.json.tmp
+latin_adjectives.jsonl
+latin_nouns.jsonl
+latin_verbs.jsonl
+lemmas.jsonl
+meow.json
+src/.DS_Store
+wiktextract/
+xtr.jsonl
