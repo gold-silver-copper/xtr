@@ -65,7 +65,7 @@ fn main() -> io::Result<()> {
         if line.contains("Latin lemmas") {
             // Write the line to the lemmas output file
             // Check if the line contains the string "Latin nouns"
-            if line.contains("Latin nouns") {
+            if line.contains("Latin nouns") && line.contains("nominative") && line.contains("genitive") && line.contains("dative") && line.contains("accusative") {
                 // Write the line to the nouns output file
           
                 writeln!(output_nouns_file, "{}", modified_json)?;
