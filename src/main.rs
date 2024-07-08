@@ -159,6 +159,7 @@ fn main() -> io::Result<()> {
     //now process the resulting nouns file
 
     {let mut word_set: HashSet<String> = HashSet::new();
+        let mut input_set: HashSet<String> = HashSet::new();
         let input_file = File::open("latin_nouns.jsonl")?;
         let reader = BufReader::new(input_file);
     
@@ -166,9 +167,11 @@ fn main() -> io::Result<()> {
         //do irregular nouns manually
         writer.write_record(&[
             "word",
+            "nominative",
+            "genitive",
        
             "gender",
-            "irregular",
+           
             "pluralia_tantum",
         ])?;
     
@@ -183,7 +186,7 @@ fn main() -> io::Result<()> {
             let mut genitive = String::new();
             let mut gender = String::new();
     
-            let mut irregular = String::from("fa");
+      
             let mut pluralia_tantum = String::from("fa");
     
             if !word.contains(" ") {
@@ -251,14 +254,13 @@ fn main() -> io::Result<()> {
                     }
                 }
     
-                if line.contains("Latin irregular nouns") {
-                    irregular = "tr".into();
-                }
+             
     
                 let plain_gen = diacritics::remove_diacritics(genitive.as_str());
                 let plain_nom = diacritics::remove_diacritics(nominative.as_str());
     
-                let real_id = format!("{}_{}", plain_nom, plain_gen);
+                let real_id = format!("{}{}", plain_nom, plain_gen);
+                let mut insert_id = format!("{}{}", plain_nom, 1);
     
              
     
@@ -268,17 +270,47 @@ fn main() -> io::Result<()> {
                     && (genitive != "-")
                     && !word.contains("-")
                 {
+
+                    let unique_word = word_set.insert(real_id.clone());
+                    let unique_insert = input_set.insert(insert_id.clone());
     
             
-                    if word_set.insert(real_id.clone()) {
+                    if unique_word && unique_insert {
                         // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
                         writer.write_record(&[
-                            diacritics::remove_diacritics(real_id.as_str()),
+                            diacritics::remove_diacritics(insert_id.as_str()),
+                            diacritics::remove_diacritics(nominative.as_str()),
+                            diacritics::remove_diacritics(genitive.as_str()),
                        
                             gender,
-                            irregular,
+                 
                             pluralia_tantum,
                         ])?;
+                    }
+                    else if unique_word && !unique_insert {
+                        insert_id = format!("{}{}", plain_nom, 2);
+
+
+                        if input_set.insert(insert_id.clone()) {
+
+                            writer.write_record(&[
+                                diacritics::remove_diacritics(insert_id.as_str()),
+                                diacritics::remove_diacritics(nominative.as_str()),
+                                diacritics::remove_diacritics(genitive.as_str()),
+                           
+                                gender,
+                     
+                                pluralia_tantum,
+                            ])?;
+                        }
+
+                        else {panic!("THIRD");}
+
+
+                     
+
+
+
                     }
                 }
             }
@@ -524,8 +556,8 @@ fn main() -> io::Result<()> {
                                 canonical = form.form.clone();
                             
                         }
-                        if tags.contains(&"infinitive".to_string()) && tags.contains(&"present".to_string())
-                        && tags.len() ==2
+                        if tags.contains(&"infinitive".to_string()) && tags.contains(&"present".to_string()) && tags.contains(&"active".to_string())
+                      
                         {
                             
                                 present_infinitive = form.form.clone();
@@ -565,6 +597,7 @@ fn main() -> io::Result<()> {
             else     if line.contains("Latin fourth conjugation verbs") {
                 conjugation.push_str("4");
             }
+            else {conjugation.push_str("i");}
 
             if line.contains("Latin irregular verbs") {
                 irregular= String::from("tr");
@@ -575,6 +608,12 @@ fn main() -> io::Result<()> {
             }
             if line.contains("Latin verbs with missing perfect stem") {
                 perfect_active= String::from("MISSING");
+            }
+            if supine == "" {
+                supine =String::from("MISSING");
+            }
+            if perfect_active == "" {
+                perfect_active =String::from("MISSING");
             }
         
 
@@ -588,6 +627,7 @@ fn main() -> io::Result<()> {
              //   && (nominative != "-")
              //   && (genitive != "-")
                 && !canonical.contains("-")
+                && !canonical.contains(" ")
             {
 
         
