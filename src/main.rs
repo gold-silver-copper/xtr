@@ -124,7 +124,9 @@ fn main() -> io::Result<()> {
             // Check if the line contains the string "Latin adjectives"
             if line.contains("Latin adjectives")
                 && !line.contains("Latin abbreviations")
+                && !line.contains("Latin pronouns")
                 && !line.contains("Latin indeclinable adjectives")
+                && !line.contains("Latin terms suffixed with -libet")
             //     && !line.contains(noun_check)
             //      && !line.contains(verb_check)
             {
@@ -304,7 +306,7 @@ fn main() -> io::Result<()> {
         let entry: AdjectiveEntry = serde_json::from_str(&line)?;
         println!("SERIALIZNG ADJECTIVE DONE");
 
-        let word = entry.word.clone();
+        let mut word = entry.word.clone();
         let mut genitive = String::new();
         let mut declension = String::new();
         let mut feminine = String::new();
@@ -330,6 +332,12 @@ fn main() -> io::Result<()> {
                             {
                                 neuter = form.form.clone();
                             }
+                            if tags.contains(&"masculine".to_string())
+                            && tags.contains(&"genitive".to_string())
+                            && tags.contains(&"singular".to_string())
+                        {
+                            genitive = form.form.clone();
+                        }
                         }
                     }
                 } else {
@@ -347,10 +355,33 @@ fn main() -> io::Result<()> {
             if line.contains("Latin third declension adjectives of one termination") {
                 feminine = word.clone();
                 neuter = word.clone();
+               
             }
 
             if line.contains("Latin third declension adjectives of two terminations") {
                 feminine = word.clone();
+               
+            }
+
+
+
+            if line.contains("Latin third declension adjectives") {
+                
+                declension = "3".to_string();
+            }
+            else  if line.contains("Latin first declension adjectives") {
+                
+                declension = "1".to_string();
+            }
+            else  if line.contains("Latin second declension adjectives") {
+                
+                declension = "2".to_string();
+            }
+            else {
+               
+                
+                    declension = "12".to_string();
+                
             }
 
             if let Some(ht) = entry.head_templates {
@@ -375,7 +406,41 @@ fn main() -> io::Result<()> {
             superlative = diacritics::remove_diacritics(superlative.as_str());
             adverb = diacritics::remove_diacritics(adverb.as_str());
 
-            if feminine != "" && neuter != "" {
+
+     
+
+            if feminine != "" && neuter != "" && genitive != ""{
+                       //gen stem
+            {
+
+                let mut adj_stem = genitive.clone();
+                println!("{:#?}",adj_stem);
+
+                if genitive.ends_with("i") {
+                    adj_stem.pop();
+                }
+                else if genitive.ends_with("ae") {
+                    adj_stem.pop();
+                    adj_stem.pop();
+                }
+                else if genitive.ends_with("is") {
+                    adj_stem.pop();
+                    adj_stem.pop();
+                }
+                else if genitive.ends_with("us") {
+                    adj_stem.pop();
+                    adj_stem.pop();
+                }
+                else {panic!("COULDNT GET ADH STEM");}
+
+            }
+
+            if comparative == "" {
+
+                
+
+
+            }
                 if adj_set.insert(word.clone()) {
                     writer.write_record(&[
                         word,
