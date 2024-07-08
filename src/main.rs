@@ -162,6 +162,7 @@ fn main() -> io::Result<()> {
     let reader = BufReader::new(input_file);
 
     let mut writer = csv::Writer::from_path("nouns.csv")?;
+   //do irregular nouns manually
     writer.write_record(&[
         "word",
         "nominative",
@@ -170,6 +171,7 @@ fn main() -> io::Result<()> {
         "irregular",
         "pluralia_tantum",
     ])?;
+ 
 
     for line in reader.lines() {
         println!("{:#?}", line);
