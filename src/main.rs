@@ -291,7 +291,6 @@ fn main() -> io::Result<()> {
     let mut writer = csv::Writer::from_path("adjectives.csv")?;
     writer.write_record(&[
         "word",
-        
         "feminine",
         "neuter",
         "comparative",
@@ -335,11 +334,11 @@ fn main() -> io::Result<()> {
                                 neuter = form.form.clone();
                             }
                             if tags.contains(&"masculine".to_string())
-                            && tags.contains(&"genitive".to_string())
-                            && tags.contains(&"singular".to_string())
-                        {
-                            genitive = form.form.clone();
-                        }
+                                && tags.contains(&"genitive".to_string())
+                                && tags.contains(&"singular".to_string())
+                            {
+                                genitive = form.form.clone();
+                            }
                         }
                     }
                 } else {
@@ -357,33 +356,20 @@ fn main() -> io::Result<()> {
             if line.contains("Latin third declension adjectives of one termination") {
                 feminine = word.clone();
                 neuter = word.clone();
-               
             }
 
             if line.contains("Latin third declension adjectives of two terminations") {
                 feminine = word.clone();
-               
             }
-
-
 
             if line.contains("Latin third declension adjectives") {
-                
                 declension = "3".to_string();
-            }
-            else  if line.contains("Latin first declension adjectives") {
-                
+            } else if line.contains("Latin first declension adjectives") {
                 declension = "1".to_string();
-            }
-            else  if line.contains("Latin second declension adjectives") {
-                
+            } else if line.contains("Latin second declension adjectives") {
                 declension = "2".to_string();
-            }
-            else {
-               
-                
-                    declension = "12".to_string();
-                
+            } else {
+                declension = "12".to_string();
             }
 
             if let Some(ht) = entry.head_templates {
@@ -400,91 +386,66 @@ fn main() -> io::Result<()> {
                 }
             }
 
-         
+            if feminine != "" && neuter != "" && genitive != "" {
+                //gen stem
 
-     
-
-            if feminine != "" && neuter != "" && genitive != ""{
-                       //gen stem
-            
-
-                       let original_gen = genitive.clone();
-                       word = diacritics::remove_diacritics(word.as_str());
-                       genitive = diacritics::remove_diacritics(genitive.as_str());
-                       feminine = diacritics::remove_diacritics(feminine.as_str());
-                       neuter = diacritics::remove_diacritics(neuter.as_str());
-                       comparative = diacritics::remove_diacritics(comparative.as_str());
-                       superlative = diacritics::remove_diacritics(superlative.as_str());
-                       adverb = diacritics::remove_diacritics(adverb.as_str());
+                let original_gen = genitive.clone();
+                word = diacritics::remove_diacritics(word.as_str());
+                genitive = diacritics::remove_diacritics(genitive.as_str());
+                feminine = diacritics::remove_diacritics(feminine.as_str());
+                neuter = diacritics::remove_diacritics(neuter.as_str());
+                comparative = diacritics::remove_diacritics(comparative.as_str());
+                superlative = diacritics::remove_diacritics(superlative.as_str());
+                adverb = diacritics::remove_diacritics(adverb.as_str());
                 let mut adj_stem = genitive.clone();
-                println!("{:#?}",adj_stem);
+                println!("{:#?}", adj_stem);
 
-                
                 if original_gen.ends_with("ī̆us") {
                     adj_stem.pop();
                     adj_stem.pop();
                     adj_stem.pop();
-                }
-               else if genitive.ends_with("i") {
+                } else if genitive.ends_with("i") {
                     adj_stem.pop();
-                }
-                else if genitive.ends_with("ae") {
+                } else if genitive.ends_with("ae") {
                     adj_stem.pop();
                     adj_stem.pop();
-                }
-                else if genitive.ends_with("is") {
+                } else if genitive.ends_with("is") {
                     adj_stem.pop();
                     adj_stem.pop();
-                }
-                else if genitive.ends_with("us") {
+                } else if genitive.ends_with("us") {
                     adj_stem.pop();
                     adj_stem.pop();
-                }
-                else if genitive.ends_with("os") {
+                } else if genitive.ends_with("os") {
                     adj_stem.pop();
                     adj_stem.pop();
-                }
-                else {panic!("COULDNT GET ADH STEM");}
-
-
-            
-    
-
-            
-
-            if comparative == "" {
-
-                comparative = format!("{}{}",adj_stem,"ior")
-
-                
-
-
-                
-            }
-
-
-            if superlative == "" {
-
-                if word.ends_with("er") {
-                    superlative = format!("{}{}",adj_stem,"errimus")
-
-                }
-               else {
-                    superlative = format!("{}{}",adj_stem,"issimus")
-
+                } else {
+                    panic!("COULDNT GET ADH STEM");
                 }
 
-                
+                if comparative == "" {
+                    comparative = format!("{}{}", adj_stem, "ior")
+                }
 
-                
-
-
-                
-            }
+                if superlative == "" {
+                    if word.ends_with("er") {
+                        superlative = format!("{}{}", word, "rimus")
+                    } else {
+                        superlative = format!("{}{}", adj_stem, "issimus")
+                    }
+                }
+                if adverb == "" {
+                    //group A
+                    if word.ends_with("er") || word.ends_with("us") {
+                        adverb = format!("{}{}", adj_stem, "e")
+                    } else if adj_stem.ends_with("nt") {
+                        adverb = format!("{}{}", adj_stem, "ter")
+                    } else {
+                        adverb = format!("{}{}", adj_stem, "iter")
+                    }
+                }
                 if adj_set.insert(word.clone()) {
                     writer.write_record(&[
                         word,
-                      
                         feminine,
                         neuter,
                         comparative,
