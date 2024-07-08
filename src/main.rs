@@ -30,15 +30,19 @@ struct AdjectiveHeadTemplate {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct AdjectiveEntry {
-    // etymology_templates: Vec<EtymologyTemplate>,
-    // etymology_text: String,
+  
     forms: Option<Vec<Form>>,
     head_templates: Option<Vec<AdjectiveHeadTemplate>>,
-    //  inflection_templates: Vec<InflectionTemplate>,
-    //  lang: String,
-    //  lang_code: String,
-    //  pos: String,
-    //   senses: Vec<Sense>,
+  
+    word: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct VerbEntry {
+  
+    forms: Option<Vec<Form>>,
+  //  head_templates: Option<Vec<AdjectiveHeadTemplate>>,
+  
     word: String,
 }
 
@@ -154,68 +158,46 @@ fn main() -> io::Result<()> {
     //now process the resulting nouns file
     //now process the resulting nouns file
 
-    let mut word_set: HashSet<String> = HashSet::new();
-    let input_file = File::open("latin_nouns.jsonl")?;
-    let reader = BufReader::new(input_file);
-
-    let mut writer = csv::Writer::from_path("nouns.csv")?;
-    //do irregular nouns manually
-    writer.write_record(&[
-        "word",
-   
-        "gender",
-        "irregular",
-        "pluralia_tantum",
-    ])?;
-
-    for line in reader.lines() {
-        println!("{:#?}", line);
-        let line = line?;
-        println!("SERIALIZNG");
-        let entry: NounEntry = serde_json::from_str(&line)?;
-        println!("SERIALIZNG DONE");
-        let word = entry.word.clone();
-        let mut nominative = String::new();
-        let mut genitive = String::new();
-        let mut gender = String::new();
-
-        let mut irregular = String::from("fa");
-        let mut pluralia_tantum = String::from("fa");
-
-        if !word.contains(" ") {
-            for form in &entry.forms {
-                if let Some(tags) = &form.tags {
-                    if tags.contains(&"nominative".to_string())
-                        && tags.contains(&"singular".to_string())
-                    {
-                        if nominative == "" {
-                            nominative = form.form.clone();
-                        }
-                    }
-                    if tags.contains(&"genitive".to_string())
-                        && tags.contains(&"singular".to_string())
-                    {
-                        if genitive == "" {
-                            genitive = form.form.clone();
-                        }
-                    }
-                }
-            }
-
-            if (nominative == "") && (genitive == "") {
-                pluralia_tantum = "tr".into();
-
+    {let mut word_set: HashSet<String> = HashSet::new();
+        let input_file = File::open("latin_nouns.jsonl")?;
+        let reader = BufReader::new(input_file);
+    
+        let mut writer = csv::Writer::from_path("nouns.csv")?;
+        //do irregular nouns manually
+        writer.write_record(&[
+            "word",
+       
+            "gender",
+            "irregular",
+            "pluralia_tantum",
+        ])?;
+    
+        for line in reader.lines() {
+            println!("{:#?}", line);
+            let line = line?;
+            println!("SERIALIZNG");
+            let entry: NounEntry = serde_json::from_str(&line)?;
+            println!("SERIALIZNG DONE");
+            let word = entry.word.clone();
+            let mut nominative = String::new();
+            let mut genitive = String::new();
+            let mut gender = String::new();
+    
+            let mut irregular = String::from("fa");
+            let mut pluralia_tantum = String::from("fa");
+    
+            if !word.contains(" ") {
                 for form in &entry.forms {
                     if let Some(tags) = &form.tags {
                         if tags.contains(&"nominative".to_string())
-                            && tags.contains(&"plural".to_string())
+                            && tags.contains(&"singular".to_string())
                         {
                             if nominative == "" {
                                 nominative = form.form.clone();
                             }
                         }
                         if tags.contains(&"genitive".to_string())
-                            && tags.contains(&"plural".to_string())
+                            && tags.contains(&"singular".to_string())
                         {
                             if genitive == "" {
                                 genitive = form.form.clone();
@@ -223,246 +205,415 @@ fn main() -> io::Result<()> {
                         }
                     }
                 }
-            }
-
-            if line.contains("Latin masculine nouns") {
-                gender.push_str("m");
-            }
-            if line.contains("Latin feminine nouns") {
-                gender.push_str("f");
-            }
-            if line.contains("Latin neuter nouns") {
-                gender.push_str("n");
-            }
-
-            if gender == "" {
-                //for nouns with uncertain gender
-
-                if word.ends_with("a") {
-                    gender.push_str("f");
-                } else if word.ends_with("n") {
-                    gender.push_str("n");
-                } else {
+    
+                if (nominative == "") && (genitive == "") {
+                    pluralia_tantum = "tr".into();
+    
+                    for form in &entry.forms {
+                        if let Some(tags) = &form.tags {
+                            if tags.contains(&"nominative".to_string())
+                                && tags.contains(&"plural".to_string())
+                            {
+                                if nominative == "" {
+                                    nominative = form.form.clone();
+                                }
+                            }
+                            if tags.contains(&"genitive".to_string())
+                                && tags.contains(&"plural".to_string())
+                            {
+                                if genitive == "" {
+                                    genitive = form.form.clone();
+                                }
+                            }
+                        }
+                    }
+                }
+    
+                if line.contains("Latin masculine nouns") {
                     gender.push_str("m");
                 }
+                if line.contains("Latin feminine nouns") {
+                    gender.push_str("f");
+                }
+                if line.contains("Latin neuter nouns") {
+                    gender.push_str("n");
+                }
+    
+                if gender == "" {
+                    //for nouns with uncertain gender
+    
+                    if word.ends_with("a") {
+                        gender.push_str("f");
+                    } else if word.ends_with("n") {
+                        gender.push_str("n");
+                    } else {
+                        gender.push_str("m");
+                    }
+                }
+    
+                if line.contains("Latin irregular nouns") {
+                    irregular = "tr".into();
+                }
+    
+                let plain_gen = diacritics::remove_diacritics(genitive.as_str());
+                let plain_nom = diacritics::remove_diacritics(nominative.as_str());
+    
+                let real_id = format!("{}_{}", plain_nom, plain_gen);
+    
+             
+    
+                if (nominative != "")
+                    && (genitive != "")
+                    && (nominative != "-")
+                    && (genitive != "-")
+                    && !word.contains("-")
+                {
+    
+            
+                    if word_set.insert(real_id.clone()) {
+                        // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
+                        writer.write_record(&[
+                            diacritics::remove_diacritics(real_id.as_str()),
+                       
+                            gender,
+                            irregular,
+                            pluralia_tantum,
+                        ])?;
+                    }
+                }
+            }
+        }
+        writer.flush()?;}
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+
+  {  let input_file = File::open("latin_adjectives.jsonl")?;
+  let reader = BufReader::new(input_file);
+  let mut adj_set: HashSet<String> = HashSet::new();
+
+  let mut writer = csv::Writer::from_path("adjectives.csv")?;
+  writer.write_record(&[
+      "word",
+      "feminine",
+      "neuter",
+      "comparative",
+      "superlative",
+      "adverb",
+      "declension",
+      "adj_stem",
+  ])?;
+
+  for line in reader.lines() {
+      println!("{:#?}", line);
+      let line = line?;
+      println!("SERIALIZNG ADJECTIVE");
+      let entry: AdjectiveEntry = serde_json::from_str(&line)?;
+      println!("SERIALIZNG ADJECTIVE DONE");
+
+      let mut word = entry.word.clone();
+      let mut genitive = String::new();
+      let mut declension = String::new();
+      let mut feminine = String::new();
+      let mut neuter = String::new();
+      let mut comparative = String::new();
+      let mut superlative = String::new();
+      let mut adverb = String::new();
+
+      if let Some(forms) = entry.forms {
+          for form in forms {
+              if let Some(source) = &form.source {
+                  if source == "declension" || source == "inflection" {
+                      if let Some(tags) = &form.tags {
+                          if tags.contains(&"feminine".to_string())
+                              && tags.contains(&"nominative".to_string())
+                              && tags.contains(&"singular".to_string())
+                          {
+                              feminine = form.form.clone();
+                          }
+                          if tags.contains(&"neuter".to_string())
+                              && tags.contains(&"nominative".to_string())
+                              && tags.contains(&"singular".to_string())
+                          {
+                              neuter = form.form.clone();
+                          }
+                          if tags.contains(&"masculine".to_string())
+                              && tags.contains(&"genitive".to_string())
+                              && tags.contains(&"singular".to_string())
+                          {
+                              genitive = form.form.clone();
+                          }
+                      }
+                  }
+              } else {
+                  if let Some(tags) = &form.tags {
+                      if tags.contains(&"feminine".to_string()) && tags.len() == 1 {
+                          feminine = form.form.clone();
+                      }
+                      if tags.contains(&"neuter".to_string()) && tags.len() == 1 {
+                          neuter = form.form.clone();
+                      }
+                  }
+              }
+          }
+
+          if line.contains("Latin third declension adjectives of one termination") {
+              feminine = word.clone();
+              neuter = word.clone();
+          }
+
+          if line.contains("Latin third declension adjectives of two terminations") {
+              feminine = word.clone();
+          }
+
+          if line.contains("Latin third declension adjectives") {
+              declension = "3".to_string();
+          } else if line.contains("Latin first declension adjectives") {
+              declension = "1".to_string();
+          } else if line.contains("Latin second declension adjectives") {
+              declension = "2".to_string();
+          } else {
+              declension = "12".to_string();
+          }
+
+          if let Some(ht) = entry.head_templates {
+              if let Some(head_template) = ht.get(0) {
+                  if let Some(c) = head_template.args.get("comp") {
+                      comparative = c.as_str().unwrap_or("").to_string();
+                  }
+                  if let Some(s) = head_template.args.get("sup") {
+                      superlative = s.as_str().unwrap_or("").to_string();
+                  }
+                  if let Some(a) = head_template.args.get("adv") {
+                      adverb = a.as_str().unwrap_or("").to_string();
+                  }
+              }
+          }
+
+          if feminine != "" && neuter != "" && genitive != "" {
+              //gen stem
+
+              let original_gen = genitive.clone();
+              word = diacritics::remove_diacritics(word.as_str());
+              genitive = diacritics::remove_diacritics(genitive.as_str());
+              feminine = diacritics::remove_diacritics(feminine.as_str());
+              neuter = diacritics::remove_diacritics(neuter.as_str());
+              comparative = diacritics::remove_diacritics(comparative.as_str());
+              superlative = diacritics::remove_diacritics(superlative.as_str());
+              adverb = diacritics::remove_diacritics(adverb.as_str());
+              let mut adj_stem = genitive.clone();
+              println!("{:#?}", adj_stem);
+
+              if original_gen.ends_with("ī̆us") {
+                  adj_stem.pop();
+                  adj_stem.pop();
+                  adj_stem.pop();
+              } else if genitive.ends_with("i") {
+                  adj_stem.pop();
+              } else if genitive.ends_with("ae") {
+                  adj_stem.pop();
+                  adj_stem.pop();
+              } else if genitive.ends_with("is") {
+                  adj_stem.pop();
+                  adj_stem.pop();
+              } else if genitive.ends_with("us") {
+                  adj_stem.pop();
+                  adj_stem.pop();
+              } else if genitive.ends_with("os") {
+                  adj_stem.pop();
+                  adj_stem.pop();
+              } else {
+                  panic!("COULDNT GET ADH STEM");
+              }
+
+              if comparative == "" {
+                  comparative = format!("{}{}", adj_stem, "ior")
+              }
+
+              if superlative == "" {
+                  if word.ends_with("er") {
+                      superlative = format!("{}{}", word, "rimus")
+                  } else {
+                      superlative = format!("{}{}", adj_stem, "issimus")
+                  }
+              }
+              if adverb == "" {
+                  //group A
+                  if word.ends_with("er") || word.ends_with("us") {
+                      adverb = format!("{}{}", adj_stem, "e")
+                  } else if adj_stem.ends_with("nt") {
+                      adverb = format!("{}{}", adj_stem, "ter")
+                  } else {
+                      adverb = format!("{}{}", adj_stem, "iter")
+                  }
+              }
+              if adj_set.insert(word.clone()) {
+                  writer.write_record(&[
+                      word,
+                      feminine,
+                      neuter,
+                      comparative,
+                      superlative,
+                      adverb,
+                      declension,
+                      adj_stem,
+                  ])?;
+              }
+          }
+      }
+  }}
+
+
+    //process verbs
+    //process verbs
+    //process verbs
+    //process verbs
+    //process verbs
+    //process verbs
+    //process verbs
+    //process verbs
+{
+    let mut verb_set: HashSet<String> = HashSet::new();
+    let input_file = File::open("latin_verbs.jsonl")?;
+    let verb_reader = BufReader::new(input_file);
+
+    let mut verb_writer = csv::Writer::from_path("verbs.csv")?;
+    //do irregular nouns manually
+    verb_writer.write_record(&[
+        "word",
+        "canonical",
+   
+        "present_infinitive",
+        "perfect_active",
+        "supine",
+        "conjugation",
+        "irregular"
+    ])?;
+
+    for line in verb_reader.lines() {
+        println!("{:#?}", line);
+        let line = line?;
+        println!("SERIALIZNG VERB");
+        let entry: VerbEntry = serde_json::from_str(&line)?;
+        println!("SERIALIZNG VERB DONE");
+        let mut canonical = String::new();
+        let word = entry.word.clone();
+        let mut present_infinitive = String::new();
+        let mut perfect_active = String::new();
+        let mut supine = String::new();
+        let mut conjugation = String::from("");
+        let mut irregular = String::from("fa");
+      
+
+        if !canonical.contains(" ") {
+
+
+            if let Some(forms) = entry.forms {
+
+                for form in forms {
+                    if let Some(tags) = &form.tags {
+                        if tags.contains(&"active".to_string()) && tags.contains(&"first-person".to_string()) && tags.contains(&"indicative".to_string()) && tags.contains(&"present".to_string()) && tags.contains(&"singular".to_string()) 
+                          
+                        {
+                           
+                                canonical = form.form.clone();
+                            
+                        }
+                        if tags.contains(&"infinitive".to_string()) && tags.contains(&"present".to_string())
+                        && tags.len() ==2
+                        {
+                            
+                                present_infinitive = form.form.clone();
+                            
+                        }
+                        if tags.contains(&"active".to_string()) && tags.contains(&"perfect".to_string())
+                        && tags.len() ==2
+                        {
+                            
+                                perfect_active = form.form.clone();
+                            
+                        }
+                        if tags.contains(&"supine".to_string()) 
+                        && tags.len() ==1
+                        {
+                            
+                                supine = form.form.clone();
+                            
+                        }
+                    }
+                }
+    
             }
 
-            if line.contains("Latin irregular nouns") {
-                irregular = "tr".into();
-            }
-
-            let plain_gen = diacritics::remove_diacritics(genitive.as_str());
-            let plain_nom = diacritics::remove_diacritics(nominative.as_str());
-
-            let real_id = format!("{}_{}", plain_nom, plain_gen);
-
+            
          
 
-            if (nominative != "")
-                && (genitive != "")
-                && (nominative != "-")
-                && (genitive != "-")
-                && !word.contains("-")
+            if line.contains("Latin first conjugation verbs") {
+                conjugation.push_str("1");
+            }
+            else     if line.contains("Latin second conjugation verbs") {
+                conjugation.push_str("2");
+            }
+            else     if line.contains("Latin third conjugation verbs") {
+                conjugation.push_str("3");
+            }
+            else     if line.contains("Latin fourth conjugation verbs") {
+                conjugation.push_str("4");
+            }
+
+            if line.contains("Latin irregular verbs") {
+                irregular= String::from("tr");
+            }
+
+            if line.contains("Latin verbs with missing supine stem") {
+                supine= String::from("MISSING");
+            }
+            if line.contains("Latin verbs with missing perfect stem") {
+                perfect_active= String::from("MISSING");
+            }
+        
+
+      
+         
+    
+         
+
+            if (canonical != "")
+             //   && (genitive != "")
+             //   && (nominative != "-")
+             //   && (genitive != "-")
+                && !canonical.contains("-")
             {
 
         
-                if word_set.insert(real_id.clone()) {
+                if verb_set.insert(diacritics::remove_diacritics(word.as_str())) {
                     // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
-                    writer.write_record(&[
-                        diacritics::remove_diacritics(real_id.as_str()),
-                   
-                        gender,
-                        irregular,
-                        pluralia_tantum,
+                    verb_writer.write_record(&[
+                        diacritics::remove_diacritics(word.as_str()),
+                        diacritics::remove_diacritics(canonical.as_str()),
+                        diacritics::remove_diacritics(present_infinitive.as_str()),
+                        diacritics::remove_diacritics(perfect_active.as_str()),
+                        diacritics::remove_diacritics(supine.as_str()),
+                        conjugation,
+                        irregular
+
                     ])?;
                 }
             }
         }
     }
-    writer.flush()?;
-    //process adjectives
-    //process adjectives
-    //process adjectives
-    //process adjectives
-    //process adjectives
-    //process adjectives
-    //process adjectives
-    //process adjectives
+    verb_writer.flush()?;
+}
 
-    let input_file = File::open("latin_adjectives.jsonl")?;
-    let reader = BufReader::new(input_file);
-    let mut adj_set: HashSet<String> = HashSet::new();
 
-    let mut writer = csv::Writer::from_path("adjectives.csv")?;
-    writer.write_record(&[
-        "word",
-        "feminine",
-        "neuter",
-        "comparative",
-        "superlative",
-        "adverb",
-        "declension",
-        "adj_stem",
-    ])?;
 
-    for line in reader.lines() {
-        println!("{:#?}", line);
-        let line = line?;
-        println!("SERIALIZNG ADJECTIVE");
-        let entry: AdjectiveEntry = serde_json::from_str(&line)?;
-        println!("SERIALIZNG ADJECTIVE DONE");
 
-        let mut word = entry.word.clone();
-        let mut genitive = String::new();
-        let mut declension = String::new();
-        let mut feminine = String::new();
-        let mut neuter = String::new();
-        let mut comparative = String::new();
-        let mut superlative = String::new();
-        let mut adverb = String::new();
 
-        if let Some(forms) = entry.forms {
-            for form in forms {
-                if let Some(source) = &form.source {
-                    if source == "declension" || source == "inflection" {
-                        if let Some(tags) = &form.tags {
-                            if tags.contains(&"feminine".to_string())
-                                && tags.contains(&"nominative".to_string())
-                                && tags.contains(&"singular".to_string())
-                            {
-                                feminine = form.form.clone();
-                            }
-                            if tags.contains(&"neuter".to_string())
-                                && tags.contains(&"nominative".to_string())
-                                && tags.contains(&"singular".to_string())
-                            {
-                                neuter = form.form.clone();
-                            }
-                            if tags.contains(&"masculine".to_string())
-                                && tags.contains(&"genitive".to_string())
-                                && tags.contains(&"singular".to_string())
-                            {
-                                genitive = form.form.clone();
-                            }
-                        }
-                    }
-                } else {
-                    if let Some(tags) = &form.tags {
-                        if tags.contains(&"feminine".to_string()) && tags.len() == 1 {
-                            feminine = form.form.clone();
-                        }
-                        if tags.contains(&"neuter".to_string()) && tags.len() == 1 {
-                            neuter = form.form.clone();
-                        }
-                    }
-                }
-            }
-
-            if line.contains("Latin third declension adjectives of one termination") {
-                feminine = word.clone();
-                neuter = word.clone();
-            }
-
-            if line.contains("Latin third declension adjectives of two terminations") {
-                feminine = word.clone();
-            }
-
-            if line.contains("Latin third declension adjectives") {
-                declension = "3".to_string();
-            } else if line.contains("Latin first declension adjectives") {
-                declension = "1".to_string();
-            } else if line.contains("Latin second declension adjectives") {
-                declension = "2".to_string();
-            } else {
-                declension = "12".to_string();
-            }
-
-            if let Some(ht) = entry.head_templates {
-                if let Some(head_template) = ht.get(0) {
-                    if let Some(c) = head_template.args.get("comp") {
-                        comparative = c.as_str().unwrap_or("").to_string();
-                    }
-                    if let Some(s) = head_template.args.get("sup") {
-                        superlative = s.as_str().unwrap_or("").to_string();
-                    }
-                    if let Some(a) = head_template.args.get("adv") {
-                        adverb = a.as_str().unwrap_or("").to_string();
-                    }
-                }
-            }
-
-            if feminine != "" && neuter != "" && genitive != "" {
-                //gen stem
-
-                let original_gen = genitive.clone();
-                word = diacritics::remove_diacritics(word.as_str());
-                genitive = diacritics::remove_diacritics(genitive.as_str());
-                feminine = diacritics::remove_diacritics(feminine.as_str());
-                neuter = diacritics::remove_diacritics(neuter.as_str());
-                comparative = diacritics::remove_diacritics(comparative.as_str());
-                superlative = diacritics::remove_diacritics(superlative.as_str());
-                adverb = diacritics::remove_diacritics(adverb.as_str());
-                let mut adj_stem = genitive.clone();
-                println!("{:#?}", adj_stem);
-
-                if original_gen.ends_with("ī̆us") {
-                    adj_stem.pop();
-                    adj_stem.pop();
-                    adj_stem.pop();
-                } else if genitive.ends_with("i") {
-                    adj_stem.pop();
-                } else if genitive.ends_with("ae") {
-                    adj_stem.pop();
-                    adj_stem.pop();
-                } else if genitive.ends_with("is") {
-                    adj_stem.pop();
-                    adj_stem.pop();
-                } else if genitive.ends_with("us") {
-                    adj_stem.pop();
-                    adj_stem.pop();
-                } else if genitive.ends_with("os") {
-                    adj_stem.pop();
-                    adj_stem.pop();
-                } else {
-                    panic!("COULDNT GET ADH STEM");
-                }
-
-                if comparative == "" {
-                    comparative = format!("{}{}", adj_stem, "ior")
-                }
-
-                if superlative == "" {
-                    if word.ends_with("er") {
-                        superlative = format!("{}{}", word, "rimus")
-                    } else {
-                        superlative = format!("{}{}", adj_stem, "issimus")
-                    }
-                }
-                if adverb == "" {
-                    //group A
-                    if word.ends_with("er") || word.ends_with("us") {
-                        adverb = format!("{}{}", adj_stem, "e")
-                    } else if adj_stem.ends_with("nt") {
-                        adverb = format!("{}{}", adj_stem, "ter")
-                    } else {
-                        adverb = format!("{}{}", adj_stem, "iter")
-                    }
-                }
-                if adj_set.insert(word.clone()) {
-                    writer.write_record(&[
-                        word,
-                        feminine,
-                        neuter,
-                        comparative,
-                        superlative,
-                        adverb,
-                        declension,
-                        adj_stem,
-                    ])?;
-                }
-            }
-        }
-    }
 
     Ok(())
 }
