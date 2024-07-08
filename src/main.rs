@@ -124,6 +124,7 @@ fn main() -> io::Result<()> {
             // Check if the line contains the string "Latin adjectives"
             if line.contains("Latin adjectives")
             && !line.contains("Latin abbreviations")
+            && !line.contains("Latin indeclinable adjectives")
             //     && !line.contains(noun_check)
             //      && !line.contains(verb_check)
             {
@@ -282,6 +283,7 @@ fn main() -> io::Result<()> {
 
     let input_file = File::open("latin_adjectives.jsonl")?;
     let reader = BufReader::new(input_file);
+    let mut adj_set: HashSet<String> = HashSet::new();
 
     let mut writer = csv::Writer::from_path("adjectives.csv")?;
     writer.write_record(&[
@@ -313,8 +315,17 @@ fn main() -> io::Result<()> {
 
             for form in forms {
                 if let Some(source) = &form.source {
+
+
+                 
+
+
+
                     if source == "declension"  || source == "inflection" {
                         if let Some(tags) = &form.tags {
+
+                           
+
                             if tags.contains(&"feminine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
                                 feminine = form.form.clone();
                             }
@@ -324,6 +335,34 @@ fn main() -> io::Result<()> {
                         }
                     }
                 }
+                else {
+
+                    if let Some(tags) = &form.tags { if tags.contains(&"feminine".to_string()) && tags.len() ==1 {
+                        feminine = form.form.clone();
+
+
+                    }
+                    if tags.contains(&"neuter".to_string()) && tags.len() ==1 {
+                        neuter = form.form.clone();
+
+
+                    }}
+                   
+                }
+            }
+
+            if line.contains("Latin third declension adjectives of one termination") {
+                feminine = word.clone();
+                neuter = word.clone();
+
+
+            }
+
+            if line.contains("Latin third declension adjectives of two terminations") {
+                feminine = word.clone();
+             
+
+
             }
             
             if let Some(ht) = entry.head_templates {
@@ -341,8 +380,10 @@ fn main() -> io::Result<()> {
                     }
                 }
         
-                writer.write_record(&[word, feminine, neuter, comparative, superlative, adverb])?;
+                
             }
+
+            writer.write_record(&[word, feminine, neuter, comparative, superlative, adverb])?;
 
 
         }
