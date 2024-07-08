@@ -8,23 +8,6 @@ use std::collections::HashSet;
 use std::error::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
-struct FinalNoun {
-    nom_id: String,
-    nominative: String,
-    genitive: String,
-    gender: String,
-    irregular: String,
-    pluralia_tantum: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct EtymologyTemplate {
-    args: Value,
-    expansion: String,
-    name: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
 struct Form {
     form: String,
     tags: Option<Vec<String>>,
@@ -32,38 +15,30 @@ struct Form {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct HeadTemplate {
+struct NounEntry {
+    forms: Vec<Form>,
+
+    word: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct AdjectiveHeadTemplate {
     args: Value,
     expansion: String,
     name: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct InflectionTemplate {
-    args: Value,
-    name: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct Sense {
-    categories: Vec<String>,
-    glosses: Vec<String>,
-    links: Vec<Vec<String>>,
-    raw_glosses: Vec<String>,
-    tags: Vec<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct Entry {
-    // etymology_templates: Vec<EtymologyTemplate>,
-    // etymology_text: String,
-    forms: Vec<Form>,
-    //  head_templates: Vec<HeadTemplate>,
-    // inflection_templates: Vec<InflectionTemplate>,
-    // lang: String,
-    // lang_code: String,
-    // pos: String,
-    //senses: Vec<Sense>,
+struct AdjectiveEntry {
+   // etymology_templates: Vec<EtymologyTemplate>,
+   // etymology_text: String,
+    forms: Option<Vec<Form>>,
+    head_templates: Option<Vec<AdjectiveHeadTemplate>>,
+  //  inflection_templates: Vec<InflectionTemplate>,
+  //  lang: String,
+  //  lang_code: String,
+  //  pos: String,
+ //   senses: Vec<Sense>,
     word: String,
 }
 
@@ -120,6 +95,7 @@ fn main() -> io::Result<()> {
 
         let adj_check = r#""adj""#;
         let verb_check = r#""verb""#;
+        let noun_check = r#""noun""#;
 
         // Check if the line contains the string "Latin Lemma"
         if line.contains("Latin lemmas") {
@@ -146,7 +122,11 @@ fn main() -> io::Result<()> {
                 writeln!(output_verbs_file, "{}", modified_json)?;
             }
             // Check if the line contains the string "Latin adjectives"
-            if line.contains("Latin adjectives") {
+            if line.contains("Latin adjectives")
+            && !line.contains("Latin abbreviations")
+            //     && !line.contains(noun_check)
+            //      && !line.contains(verb_check)
+            {
                 // Write the line to the adjectives output file
 
                 writeln!(output_adjectives_file, "{}", modified_json)?;
@@ -155,14 +135,25 @@ fn main() -> io::Result<()> {
     }
 
     //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
+    //now process the resulting nouns file
 
-    let mut dictionary: HashMap<String, FinalNoun> = HashMap::new();
     let mut word_set: HashSet<String> = HashSet::new();
     let input_file = File::open("latin_nouns.jsonl")?;
     let reader = BufReader::new(input_file);
 
     let mut writer = csv::Writer::from_path("nouns.csv")?;
-   //do irregular nouns manually
+    //do irregular nouns manually
     writer.write_record(&[
         "word",
         "nominative",
@@ -171,13 +162,12 @@ fn main() -> io::Result<()> {
         "irregular",
         "pluralia_tantum",
     ])?;
- 
 
     for line in reader.lines() {
         println!("{:#?}", line);
         let line = line?;
         println!("SERIALIZNG");
-        let entry: Entry = serde_json::from_str(&line)?;
+        let entry: NounEntry = serde_json::from_str(&line)?;
         println!("SERIALIZNG DONE");
         let word = entry.word.clone();
         let mut nominative = String::new();
@@ -187,41 +177,18 @@ fn main() -> io::Result<()> {
         let mut irregular = String::from("fa");
         let mut pluralia_tantum = String::from("fa");
 
-     if !word.contains(" ") {
-
-        for form in &entry.forms {
-            if let Some(tags) = &form.tags {
-                if tags.contains(&"nominative".to_string())
-                    && tags.contains(&"singular".to_string())
-                {
-                    if nominative == "" {
-                        nominative = form.form.clone();
-                    }
-                }
-                if tags.contains(&"genitive".to_string())
-                    && tags.contains(&"singular".to_string())
-                {
-                    if genitive == "" {
-                        genitive = form.form.clone();
-                    }
-                }
-            }
-        }
-
-        if (nominative == "") && (genitive == "") {
-            pluralia_tantum = "tr".into();
-
+        if !word.contains(" ") {
             for form in &entry.forms {
                 if let Some(tags) = &form.tags {
                     if tags.contains(&"nominative".to_string())
-                        && tags.contains(&"plural".to_string())
+                        && tags.contains(&"singular".to_string())
                     {
                         if nominative == "" {
                             nominative = form.form.clone();
                         }
                     }
                     if tags.contains(&"genitive".to_string())
-                        && tags.contains(&"plural".to_string())
+                        && tags.contains(&"singular".to_string())
                     {
                         if genitive == "" {
                             genitive = form.form.clone();
@@ -229,79 +196,162 @@ fn main() -> io::Result<()> {
                     }
                 }
             }
-        } 
 
-        if line.contains("Latin masculine nouns") {
-            gender.push_str("m");
-        }
-        if line.contains("Latin feminine nouns") {
-            gender.push_str("f");
-        }
-        if line.contains("Latin neuter nouns") {
-            gender.push_str("n");
-        }
+            if (nominative == "") && (genitive == "") {
+                pluralia_tantum = "tr".into();
 
-        if gender == "" {
-            //for nouns with uncertain gender
-
-            if word.ends_with("a") {
-                gender.push_str("f");
-
+                for form in &entry.forms {
+                    if let Some(tags) = &form.tags {
+                        if tags.contains(&"nominative".to_string())
+                            && tags.contains(&"plural".to_string())
+                        {
+                            if nominative == "" {
+                                nominative = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"genitive".to_string())
+                            && tags.contains(&"plural".to_string())
+                        {
+                            if genitive == "" {
+                                genitive = form.form.clone();
+                            }
+                        }
+                    }
+                }
             }
-            else if word.ends_with("n") {
-                gender.push_str("n");
 
-            }
-            else {
+            if line.contains("Latin masculine nouns") {
                 gender.push_str("m");
+            }
+            if line.contains("Latin feminine nouns") {
+                gender.push_str("f");
+            }
+            if line.contains("Latin neuter nouns") {
+                gender.push_str("n");
+            }
 
+            if gender == "" {
+                //for nouns with uncertain gender
+
+                if word.ends_with("a") {
+                    gender.push_str("f");
+                } else if word.ends_with("n") {
+                    gender.push_str("n");
+                } else {
+                    gender.push_str("m");
+                }
+            }
+
+            if line.contains("Latin irregular nouns") {
+                irregular = "tr".into();
+            }
+
+            let plain_gen = diacritics::remove_diacritics(genitive.as_str());
+
+            let real_id = format!("{}_{}", word, plain_gen);
+
+            if (nominative != "")
+                && (genitive != "")
+                && (nominative != "-")
+                && (genitive != "-")
+                && !word.contains("-")
+            {
+                if word_set.insert(real_id.clone()) {
+                    // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
+                    writer.write_record(&[
+                        diacritics::remove_diacritics(real_id.as_str()),
+                        diacritics::remove_diacritics(nominative.as_str()),
+                        diacritics::remove_diacritics(genitive.as_str()),
+                        gender,
+                        irregular,
+                        pluralia_tantum,
+                    ])?;
+                }
+            }
+        }
+    }
+    writer.flush()?;
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+    //process adjectives
+
+    let input_file = File::open("latin_adjectives.jsonl")?;
+    let reader = BufReader::new(input_file);
+
+    let mut writer = csv::Writer::from_path("adjectives.csv")?;
+    writer.write_record(&[
+        "word",
+        "feminine",
+        "neuter",
+        "comparative",
+        "superlative",
+        "adverb",
+    ])?;
+
+
+    for line in reader.lines() {
+
+        println!("{:#?}", line);
+        let line = line?;
+        println!("SERIALIZNG ADJECTIVE");
+        let entry: AdjectiveEntry = serde_json::from_str(&line)?;
+        println!("SERIALIZNG ADJECTIVE DONE");
+
+        let word = entry.word.clone();
+        let mut feminine = String::new();
+        let mut neuter = String::new();
+        let mut comparative = String::new();
+        let mut superlative = String::new();
+        let mut adverb = String::new();
+
+        if let Some(forms) = entry.forms {
+
+            for form in forms {
+                if let Some(source) = &form.source {
+                    if source == "declension"  || source == "inflection" {
+                        if let Some(tags) = &form.tags {
+                            if tags.contains(&"feminine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                                feminine = form.form.clone();
+                            }
+                            if tags.contains(&"neuter".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                                neuter = form.form.clone();
+                            }
+                        }
+                    }
+                }
             }
             
+            if let Some(ht) = entry.head_templates {
+    
+                if let Some(head_template) = ht.get(0) {
+                
+                    if let Some(c) = head_template.args.get("comp") {
+                        comparative = c.as_str().unwrap_or("").to_string();
+                    }
+                    if let Some(s) = head_template.args.get("sup") {
+                        superlative = s.as_str().unwrap_or("").to_string();
+                    }
+                    if let Some(a) = head_template.args.get("adv") {
+                        adverb = a.as_str().unwrap_or("").to_string();
+                    }
+                }
+        
+                writer.write_record(&[word, feminine, neuter, comparative, superlative, adverb])?;
+            }
+
+
         }
-
-        if line.contains("Latin irregular nouns") {
-            irregular = "tr".into();
-        }
-
-
-        let plain_gen = diacritics::remove_diacritics(genitive.as_str());
-
-        let real_id = format!("{}_{}",word,plain_gen);
 
        
 
-
-
-
-        if (nominative != "") && (genitive != "") && (nominative != "-") && (genitive != "-") && !word.contains("-") {
-
-            if word_set.insert(real_id.clone()) {
-
-                // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
-                writer.write_record(&[
-                    diacritics::remove_diacritics(real_id.as_str()),
-                    diacritics::remove_diacritics(nominative.as_str()),
-                    diacritics::remove_diacritics(genitive.as_str()),
-                    gender,
-                    irregular,
-                    pluralia_tantum,
-                ])?;
-
-
-            
-            }
-          
-
-
-        }
-
-
-
-    
-     }
+       
     }
-
-    writer.flush()?;
+    
 
     Ok(())
 }
