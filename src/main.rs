@@ -30,15 +30,15 @@ struct AdjectiveHeadTemplate {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct AdjectiveEntry {
-   // etymology_templates: Vec<EtymologyTemplate>,
-   // etymology_text: String,
+    // etymology_templates: Vec<EtymologyTemplate>,
+    // etymology_text: String,
     forms: Option<Vec<Form>>,
     head_templates: Option<Vec<AdjectiveHeadTemplate>>,
-  //  inflection_templates: Vec<InflectionTemplate>,
-  //  lang: String,
-  //  lang_code: String,
-  //  pos: String,
- //   senses: Vec<Sense>,
+    //  inflection_templates: Vec<InflectionTemplate>,
+    //  lang: String,
+    //  lang_code: String,
+    //  pos: String,
+    //   senses: Vec<Sense>,
     word: String,
 }
 
@@ -123,8 +123,8 @@ fn main() -> io::Result<()> {
             }
             // Check if the line contains the string "Latin adjectives"
             if line.contains("Latin adjectives")
-            && !line.contains("Latin abbreviations")
-            && !line.contains("Latin indeclinable adjectives")
+                && !line.contains("Latin abbreviations")
+                && !line.contains("Latin indeclinable adjectives")
             //     && !line.contains(noun_check)
             //      && !line.contains(verb_check)
             {
@@ -288,16 +288,16 @@ fn main() -> io::Result<()> {
     let mut writer = csv::Writer::from_path("adjectives.csv")?;
     writer.write_record(&[
         "word",
+        "genitive",
         "feminine",
         "neuter",
         "comparative",
         "superlative",
         "adverb",
+        "declension",
     ])?;
 
-
     for line in reader.lines() {
-
         println!("{:#?}", line);
         let line = line?;
         println!("SERIALIZNG ADJECTIVE");
@@ -305,6 +305,8 @@ fn main() -> io::Result<()> {
         println!("SERIALIZNG ADJECTIVE DONE");
 
         let word = entry.word.clone();
+        let mut genitive = String::new();
+        let mut declension = String::new();
         let mut feminine = String::new();
         let mut neuter = String::new();
         let mut comparative = String::new();
@@ -312,63 +314,47 @@ fn main() -> io::Result<()> {
         let mut adverb = String::new();
 
         if let Some(forms) = entry.forms {
-
             for form in forms {
                 if let Some(source) = &form.source {
-
-
-                 
-
-
-
-                    if source == "declension"  || source == "inflection" {
+                    if source == "declension" || source == "inflection" {
                         if let Some(tags) = &form.tags {
-
-                           
-
-                            if tags.contains(&"feminine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if tags.contains(&"feminine".to_string())
+                                && tags.contains(&"nominative".to_string())
+                                && tags.contains(&"singular".to_string())
+                            {
                                 feminine = form.form.clone();
                             }
-                            if tags.contains(&"neuter".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if tags.contains(&"neuter".to_string())
+                                && tags.contains(&"nominative".to_string())
+                                && tags.contains(&"singular".to_string())
+                            {
                                 neuter = form.form.clone();
                             }
                         }
                     }
-                }
-                else {
-
-                    if let Some(tags) = &form.tags { if tags.contains(&"feminine".to_string()) && tags.len() ==1 {
-                        feminine = form.form.clone();
-
-
+                } else {
+                    if let Some(tags) = &form.tags {
+                        if tags.contains(&"feminine".to_string()) && tags.len() == 1 {
+                            feminine = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.len() == 1 {
+                            neuter = form.form.clone();
+                        }
                     }
-                    if tags.contains(&"neuter".to_string()) && tags.len() ==1 {
-                        neuter = form.form.clone();
-
-
-                    }}
-                   
                 }
             }
 
             if line.contains("Latin third declension adjectives of one termination") {
                 feminine = word.clone();
                 neuter = word.clone();
-
-
             }
 
             if line.contains("Latin third declension adjectives of two terminations") {
                 feminine = word.clone();
-             
-
-
             }
-            
+
             if let Some(ht) = entry.head_templates {
-    
                 if let Some(head_template) = ht.get(0) {
-                
                     if let Some(c) = head_template.args.get("comp") {
                         comparative = c.as_str().unwrap_or("").to_string();
                     }
@@ -379,20 +365,32 @@ fn main() -> io::Result<()> {
                         adverb = a.as_str().unwrap_or("").to_string();
                     }
                 }
-        
-                
             }
 
-            writer.write_record(&[word, feminine, neuter, comparative, superlative, adverb])?;
+            word = diacritics::remove_diacritics(word.as_str());
+            genitive = diacritics::remove_diacritics(genitive.as_str());
+            feminine = diacritics::remove_diacritics(feminine.as_str());
+            neuter = diacritics::remove_diacritics(neuter.as_str());
+            comparative = diacritics::remove_diacritics(comparative.as_str());
+            superlative = diacritics::remove_diacritics(superlative.as_str());
+            adverb = diacritics::remove_diacritics(adverb.as_str());
 
-
+            if feminine != "" && neuter != "" {
+                if adj_set.insert(word.clone()) {
+                    writer.write_record(&[
+                        word,
+                        genitive,
+                        feminine,
+                        neuter,
+                        comparative,
+                        superlative,
+                        adverb,
+                        declension,
+                    ])?;
+                }
+            }
         }
-
-       
-
-       
     }
-    
 
     Ok(())
 }
