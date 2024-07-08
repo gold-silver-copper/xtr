@@ -105,6 +105,8 @@ fn main() -> io::Result<()> {
                 && !line.contains(adj_check)
                 && !line.contains(verb_check)
                 && !line.contains("Latin cardinal numbers")
+             //   && !line.contains("Latin proper nouns")
+              //  && !line.contains("Latin proper noun forms")
                 && line.contains("nominative")
                 && line.contains("genitive")
                 && line.contains("dative")
@@ -160,8 +162,7 @@ fn main() -> io::Result<()> {
     //do irregular nouns manually
     writer.write_record(&[
         "word",
-        "nominative",
-        "genitive",
+   
         "gender",
         "irregular",
         "pluralia_tantum",
@@ -251,8 +252,11 @@ fn main() -> io::Result<()> {
             }
 
             let plain_gen = diacritics::remove_diacritics(genitive.as_str());
+            let plain_nom = diacritics::remove_diacritics(nominative.as_str());
 
-            let real_id = format!("{}_{}", word, plain_gen);
+            let real_id = format!("{}_{}", plain_nom, plain_gen);
+
+         
 
             if (nominative != "")
                 && (genitive != "")
@@ -260,12 +264,13 @@ fn main() -> io::Result<()> {
                 && (genitive != "-")
                 && !word.contains("-")
             {
+
+        
                 if word_set.insert(real_id.clone()) {
                     // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
                     writer.write_record(&[
                         diacritics::remove_diacritics(real_id.as_str()),
-                        diacritics::remove_diacritics(nominative.as_str()),
-                        diacritics::remove_diacritics(genitive.as_str()),
+                   
                         gender,
                         irregular,
                         pluralia_tantum,
