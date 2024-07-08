@@ -4,6 +4,7 @@ use std::io::{self, BufRead, BufReader, Write};
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::error::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -156,10 +157,11 @@ fn main() -> io::Result<()> {
     //now process the resulting nouns file
 
     let mut dictionary: HashMap<String, FinalNoun> = HashMap::new();
+    let mut word_set: HashSet<String> = HashSet::new();
     let input_file = File::open("latin_nouns.jsonl")?;
     let reader = BufReader::new(input_file);
 
-    let mut writer = csv::Writer::from_path("output.csv")?;
+    let mut writer = csv::Writer::from_path("nouns.csv")?;
     writer.write_record(&[
         "word",
         "nominative",
@@ -259,16 +261,41 @@ fn main() -> io::Result<()> {
             irregular = "tr".into();
         }
 
-        let real_id = format!("{}_{}",word,genitive.to_ascii_lowercase());
 
-        writer.write_record(&[
-            word,
-            nominative,
-            genitive,
-            gender,
-            irregular,
-            pluralia_tantum,
-        ])?;
+        let plain_gen = diacritics::remove_diacritics(genitive.as_str());
+
+        let real_id = format!("{}_{}",word,plain_gen);
+
+       
+
+
+
+
+        if (nominative != "") && (genitive != "") && (nominative != "-") && (genitive != "-") && !word.contains("-") {
+
+            if word_set.insert(real_id.clone()) {
+
+                // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
+                writer.write_record(&[
+                    diacritics::remove_diacritics(real_id.as_str()),
+                    diacritics::remove_diacritics(nominative.as_str()),
+                    diacritics::remove_diacritics(genitive.as_str()),
+                    gender,
+                    irregular,
+                    pluralia_tantum,
+                ])?;
+
+
+            
+            }
+          
+
+
+        }
+
+
+
+    
      }
     }
 
