@@ -127,6 +127,7 @@ fn main() -> io::Result<()> {
                 && !line.contains("Latin pronouns")
                 && !line.contains("Latin indeclinable adjectives")
                 && !line.contains("Latin terms suffixed with -libet")
+                && !line.contains("with an indeclinable portion")
             //     && !line.contains(noun_check)
             //      && !line.contains(verb_check)
             {
@@ -290,13 +291,14 @@ fn main() -> io::Result<()> {
     let mut writer = csv::Writer::from_path("adjectives.csv")?;
     writer.write_record(&[
         "word",
-        "genitive",
+        
         "feminine",
         "neuter",
         "comparative",
         "superlative",
         "adverb",
         "declension",
+        "adj_stem",
     ])?;
 
     for line in reader.lines() {
@@ -398,25 +400,32 @@ fn main() -> io::Result<()> {
                 }
             }
 
-            word = diacritics::remove_diacritics(word.as_str());
-            genitive = diacritics::remove_diacritics(genitive.as_str());
-            feminine = diacritics::remove_diacritics(feminine.as_str());
-            neuter = diacritics::remove_diacritics(neuter.as_str());
-            comparative = diacritics::remove_diacritics(comparative.as_str());
-            superlative = diacritics::remove_diacritics(superlative.as_str());
-            adverb = diacritics::remove_diacritics(adverb.as_str());
-
+         
 
      
 
             if feminine != "" && neuter != "" && genitive != ""{
                        //gen stem
-            {
+            
 
+                       let original_gen = genitive.clone();
+                       word = diacritics::remove_diacritics(word.as_str());
+                       genitive = diacritics::remove_diacritics(genitive.as_str());
+                       feminine = diacritics::remove_diacritics(feminine.as_str());
+                       neuter = diacritics::remove_diacritics(neuter.as_str());
+                       comparative = diacritics::remove_diacritics(comparative.as_str());
+                       superlative = diacritics::remove_diacritics(superlative.as_str());
+                       adverb = diacritics::remove_diacritics(adverb.as_str());
                 let mut adj_stem = genitive.clone();
                 println!("{:#?}",adj_stem);
 
-                if genitive.ends_with("i") {
+                
+                if original_gen.ends_with("ī̆us") {
+                    adj_stem.pop();
+                    adj_stem.pop();
+                    adj_stem.pop();
+                }
+               else if genitive.ends_with("i") {
                     adj_stem.pop();
                 }
                 else if genitive.ends_with("ae") {
@@ -431,26 +440,58 @@ fn main() -> io::Result<()> {
                     adj_stem.pop();
                     adj_stem.pop();
                 }
+                else if genitive.ends_with("os") {
+                    adj_stem.pop();
+                    adj_stem.pop();
+                }
                 else {panic!("COULDNT GET ADH STEM");}
 
-            }
+
+            
+    
+
+            
 
             if comparative == "" {
+
+                comparative = format!("{}{}",adj_stem,"ior")
 
                 
 
 
+                
+            }
+
+
+            if superlative == "" {
+
+                if word.ends_with("er") {
+                    superlative = format!("{}{}",adj_stem,"errimus")
+
+                }
+               else {
+                    superlative = format!("{}{}",adj_stem,"issimus")
+
+                }
+
+                
+
+                
+
+
+                
             }
                 if adj_set.insert(word.clone()) {
                     writer.write_record(&[
                         word,
-                        genitive,
+                      
                         feminine,
                         neuter,
                         comparative,
                         superlative,
                         adverb,
                         declension,
+                        adj_stem,
                     ])?;
                 }
             }
