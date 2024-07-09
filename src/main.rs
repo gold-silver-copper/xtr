@@ -260,7 +260,7 @@ fn main() -> io::Result<()> {
                 let plain_nom = diacritics::remove_diacritics(nominative.as_str());
     
                 let real_id = format!("{}{}", plain_nom, plain_gen);
-                let mut insert_id = format!("{}{}", plain_nom, 1);
+                let mut insert_id = format!("{}", plain_nom);
     
              
     
