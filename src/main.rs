@@ -235,10 +235,10 @@ fn main() -> io::Result<()> {
                 if line.contains("Latin masculine nouns") {
                     gender.push_str("m");
                 }
-                if line.contains("Latin feminine nouns") {
+                else if line.contains("Latin feminine nouns") {
                     gender.push_str("f");
                 }
-                if line.contains("Latin neuter nouns") {
+                else if line.contains("Latin neuter nouns") {
                     gender.push_str("n");
                 }
     
