@@ -856,6 +856,41 @@ fn main() -> io::Result<()> {
             "present_infinitive",
             "perfect_active",
             "supine",
+           "indicative_active_present_singular_first",
+"indicative_active_present_singular_second",
+"indicative_active_present_singular_third",
+"indicative_active_present_plural_first",
+"indicative_active_present_plural_second",
+"indicative_active_present_plural_third",
+
+"indicative_active_imperfect_singular_first",
+"indicative_active_imperfect_singular_second",
+"indicative_active_imperfect_singular_third",
+"indicative_active_imperfect_plural_first",
+"indicative_active_imperfect_plural_second",
+"indicative_active_imperfect_plural_third",
+
+"indicative_active_future_singular_first",
+"indicative_active_future_singular_second",
+"indicative_active_future_singular_third",
+"indicative_active_future_plural_first",
+"indicative_active_future_plural_second",
+"indicative_active_future_plural_third",
+
+"indicative_active_perfect_singular_first",
+"indicative_active_perfect_singular_second",
+"indicative_active_perfect_singular_third",
+"indicative_active_perfect_plural_first",
+"indicative_active_perfect_plural_second",
+"indicative_active_perfect_plural_third",
+
+"indicative_active_pluperfect_singular_first",
+"indicative_active_pluperfect_singular_second",
+"indicative_active_pluperfect_singular_third",
+"indicative_active_pluperfect_plural_first",
+"indicative_active_pluperfect_plural_second",
+"indicative_active_pluperfect_plural_third",
+
        
         ])?;
 
@@ -870,6 +905,42 @@ fn main() -> io::Result<()> {
             let mut present_infinitive = String::new();
             let mut perfect_active = String::new();
             let mut supine = String::new();
+
+            let mut indicative_active_present_singular_first = String::new();
+let mut indicative_active_present_singular_second = String::new();
+let mut indicative_active_present_singular_third = String::new();
+let mut indicative_active_present_plural_first = String::new();
+let mut indicative_active_present_plural_second = String::new();
+let mut indicative_active_present_plural_third = String::new();
+
+let mut indicative_active_imperfect_singular_first = String::new();
+let mut indicative_active_imperfect_singular_second = String::new();
+let mut indicative_active_imperfect_singular_third = String::new();
+let mut indicative_active_imperfect_plural_first = String::new();
+let mut indicative_active_imperfect_plural_second = String::new();
+let mut indicative_active_imperfect_plural_third = String::new();
+
+let mut indicative_active_future_singular_first = String::new();
+let mut indicative_active_future_singular_second = String::new();
+let mut indicative_active_future_singular_third = String::new();
+let mut indicative_active_future_plural_first = String::new();
+let mut indicative_active_future_plural_second = String::new();
+let mut indicative_active_future_plural_third = String::new();
+
+let mut indicative_active_perfect_singular_first = String::new();
+let mut indicative_active_perfect_singular_second = String::new();
+let mut indicative_active_perfect_singular_third = String::new();
+let mut indicative_active_perfect_plural_first = String::new();
+let mut indicative_active_perfect_plural_second = String::new();
+let mut indicative_active_perfect_plural_third = String::new();
+
+let mut indicative_active_pluperfect_singular_first = String::new();
+let mut indicative_active_pluperfect_singular_second = String::new();
+let mut indicative_active_pluperfect_singular_third = String::new();
+let mut indicative_active_pluperfect_plural_first = String::new();
+let mut indicative_active_pluperfect_plural_second = String::new();
+let mut indicative_active_pluperfect_plural_third = String::new();
+
            
 
             if !canonical.contains(" ") {
@@ -899,6 +970,25 @@ fn main() -> io::Result<()> {
                             if tags.contains(&"supine".to_string()) && tags.len() == 1 {
                                 supine = form.form.clone();
                             }
+                            if tags.contains(&"active".to_string())
+                            && tags.contains(&"first-person".to_string())
+                            && tags.contains(&"indicative".to_string())
+                            && tags.contains(&"present".to_string())
+                            && tags.contains(&"singular".to_string())
+                        {
+                            indicative_active_present_singular_first = form.form.clone();
+                        }
+
+                        if tags.contains(&"active".to_string())
+                        && tags.contains(&"first-person".to_string())
+                        && tags.contains(&"indicative".to_string())
+                        && tags.contains(&"present".to_string())
+                        && tags.contains(&"singular".to_string())
+                    {
+                        indicative_active_present_singular_first = form.form.clone();
+                    }
+
+                    
                         }
                     }
                 }
