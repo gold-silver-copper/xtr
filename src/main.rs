@@ -856,42 +856,36 @@ fn main() -> io::Result<()> {
             "present_infinitive",
             "perfect_active",
             "supine",
-           "indicative_active_present_singular_first",
-"indicative_active_present_singular_second",
-"indicative_active_present_singular_third",
-"indicative_active_present_plural_first",
-"indicative_active_present_plural_second",
-"indicative_active_present_plural_third",
-
-"indicative_active_imperfect_singular_first",
-"indicative_active_imperfect_singular_second",
-"indicative_active_imperfect_singular_third",
-"indicative_active_imperfect_plural_first",
-"indicative_active_imperfect_plural_second",
-"indicative_active_imperfect_plural_third",
-
-"indicative_active_future_singular_first",
-"indicative_active_future_singular_second",
-"indicative_active_future_singular_third",
-"indicative_active_future_plural_first",
-"indicative_active_future_plural_second",
-"indicative_active_future_plural_third",
-
-"indicative_active_perfect_singular_first",
-"indicative_active_perfect_singular_second",
-"indicative_active_perfect_singular_third",
-"indicative_active_perfect_plural_first",
-"indicative_active_perfect_plural_second",
-"indicative_active_perfect_plural_third",
-
-"indicative_active_pluperfect_singular_first",
-"indicative_active_pluperfect_singular_second",
-"indicative_active_pluperfect_singular_third",
-"indicative_active_pluperfect_plural_first",
-"indicative_active_pluperfect_plural_second",
-"indicative_active_pluperfect_plural_third",
-
-       
+            "indicative_active_present_singular_first",
+            "indicative_active_present_singular_second",
+            "indicative_active_present_singular_third",
+            "indicative_active_present_plural_first",
+            "indicative_active_present_plural_second",
+            "indicative_active_present_plural_third",
+            "indicative_active_imperfect_singular_first",
+            "indicative_active_imperfect_singular_second",
+            "indicative_active_imperfect_singular_third",
+            "indicative_active_imperfect_plural_first",
+            "indicative_active_imperfect_plural_second",
+            "indicative_active_imperfect_plural_third",
+            "indicative_active_future_singular_first",
+            "indicative_active_future_singular_second",
+            "indicative_active_future_singular_third",
+            "indicative_active_future_plural_first",
+            "indicative_active_future_plural_second",
+            "indicative_active_future_plural_third",
+            "indicative_active_perfect_singular_first",
+            "indicative_active_perfect_singular_second",
+            "indicative_active_perfect_singular_third",
+            "indicative_active_perfect_plural_first",
+            "indicative_active_perfect_plural_second",
+            "indicative_active_perfect_plural_third",
+            "indicative_active_pluperfect_singular_first",
+            "indicative_active_pluperfect_singular_second",
+            "indicative_active_pluperfect_singular_third",
+            "indicative_active_pluperfect_plural_first",
+            "indicative_active_pluperfect_plural_second",
+            "indicative_active_pluperfect_plural_third",
         ])?;
 
         for line in verb_reader.lines() {
@@ -907,41 +901,39 @@ fn main() -> io::Result<()> {
             let mut supine = String::new();
 
             let mut indicative_active_present_singular_first = String::new();
-let mut indicative_active_present_singular_second = String::new();
-let mut indicative_active_present_singular_third = String::new();
-let mut indicative_active_present_plural_first = String::new();
-let mut indicative_active_present_plural_second = String::new();
-let mut indicative_active_present_plural_third = String::new();
+            let mut indicative_active_present_singular_second = String::new();
+            let mut indicative_active_present_singular_third = String::new();
+            let mut indicative_active_present_plural_first = String::new();
+            let mut indicative_active_present_plural_second = String::new();
+            let mut indicative_active_present_plural_third = String::new();
 
-let mut indicative_active_imperfect_singular_first = String::new();
-let mut indicative_active_imperfect_singular_second = String::new();
-let mut indicative_active_imperfect_singular_third = String::new();
-let mut indicative_active_imperfect_plural_first = String::new();
-let mut indicative_active_imperfect_plural_second = String::new();
-let mut indicative_active_imperfect_plural_third = String::new();
+            let mut indicative_active_imperfect_singular_first = String::new();
+            let mut indicative_active_imperfect_singular_second = String::new();
+            let mut indicative_active_imperfect_singular_third = String::new();
+            let mut indicative_active_imperfect_plural_first = String::new();
+            let mut indicative_active_imperfect_plural_second = String::new();
+            let mut indicative_active_imperfect_plural_third = String::new();
 
-let mut indicative_active_future_singular_first = String::new();
-let mut indicative_active_future_singular_second = String::new();
-let mut indicative_active_future_singular_third = String::new();
-let mut indicative_active_future_plural_first = String::new();
-let mut indicative_active_future_plural_second = String::new();
-let mut indicative_active_future_plural_third = String::new();
+            let mut indicative_active_future_singular_first = String::new();
+            let mut indicative_active_future_singular_second = String::new();
+            let mut indicative_active_future_singular_third = String::new();
+            let mut indicative_active_future_plural_first = String::new();
+            let mut indicative_active_future_plural_second = String::new();
+            let mut indicative_active_future_plural_third = String::new();
 
-let mut indicative_active_perfect_singular_first = String::new();
-let mut indicative_active_perfect_singular_second = String::new();
-let mut indicative_active_perfect_singular_third = String::new();
-let mut indicative_active_perfect_plural_first = String::new();
-let mut indicative_active_perfect_plural_second = String::new();
-let mut indicative_active_perfect_plural_third = String::new();
+            let mut indicative_active_perfect_singular_first = String::new();
+            let mut indicative_active_perfect_singular_second = String::new();
+            let mut indicative_active_perfect_singular_third = String::new();
+            let mut indicative_active_perfect_plural_first = String::new();
+            let mut indicative_active_perfect_plural_second = String::new();
+            let mut indicative_active_perfect_plural_third = String::new();
 
-let mut indicative_active_pluperfect_singular_first = String::new();
-let mut indicative_active_pluperfect_singular_second = String::new();
-let mut indicative_active_pluperfect_singular_third = String::new();
-let mut indicative_active_pluperfect_plural_first = String::new();
-let mut indicative_active_pluperfect_plural_second = String::new();
-let mut indicative_active_pluperfect_plural_third = String::new();
-
-           
+            let mut indicative_active_pluperfect_singular_first = String::new();
+            let mut indicative_active_pluperfect_singular_second = String::new();
+            let mut indicative_active_pluperfect_singular_third = String::new();
+            let mut indicative_active_pluperfect_plural_first = String::new();
+            let mut indicative_active_pluperfect_plural_second = String::new();
+            let mut indicative_active_pluperfect_plural_third = String::new();
 
             if !canonical.contains(" ") {
                 if let Some(forms) = entry.forms {
@@ -970,33 +962,136 @@ let mut indicative_active_pluperfect_plural_third = String::new();
                             if tags.contains(&"supine".to_string()) && tags.len() == 1 {
                                 supine = form.form.clone();
                             }
-                            if tags.contains(&"active".to_string())
-                            && tags.contains(&"first-person".to_string())
-                            && tags.contains(&"indicative".to_string())
-                            && tags.contains(&"present".to_string())
-                            && tags.contains(&"singular".to_string())
-                        {
-                            indicative_active_present_singular_first = form.form.clone();
-                        }
-
-                        if tags.contains(&"active".to_string())
-                        && tags.contains(&"first-person".to_string())
-                        && tags.contains(&"indicative".to_string())
-                        && tags.contains(&"present".to_string())
-                        && tags.contains(&"singular".to_string())
-                    {
-                        indicative_active_present_singular_first = form.form.clone();
-                    }
-
-                    
+                            if tags.contains(&"active".to_string()) {
+                                if tags.contains(&"indicative".to_string()) {
+                                    if tags.contains(&"present".to_string()) {
+                                        if tags.contains(&"singular".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_present_singular_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_present_singular_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_present_singular_third =
+                                                    form.form.clone();
+                                            }
+                                        } else if tags.contains(&"plural".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_present_plural_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_present_plural_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_present_plural_third =
+                                                    form.form.clone();
+                                            }
+                                        }
+                                    } else if tags.contains(&"imperfect".to_string()) {
+                                        if tags.contains(&"singular".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_imperfect_singular_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_imperfect_singular_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_imperfect_singular_third =
+                                                    form.form.clone();
+                                            }
+                                        } else if tags.contains(&"plural".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_imperfect_plural_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_imperfect_plural_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_imperfect_plural_third =
+                                                    form.form.clone();
+                                            }
+                                        }
+                                    } else if tags.contains(&"future".to_string()) {
+                                        if tags.contains(&"singular".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_future_singular_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_future_singular_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_future_singular_third =
+                                                    form.form.clone();
+                                            }
+                                        } else if tags.contains(&"plural".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_future_plural_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_future_plural_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_future_plural_third =
+                                                    form.form.clone();
+                                            }
+                                        }
+                                    } else if tags.contains(&"perfect".to_string()) {
+                                        if tags.contains(&"singular".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_perfect_singular_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_perfect_singular_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_perfect_singular_third =
+                                                    form.form.clone();
+                                            }
+                                        } else if tags.contains(&"plural".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_perfect_plural_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_perfect_plural_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_perfect_plural_third =
+                                                    form.form.clone();
+                                            }
+                                        }
+                                    } else if tags.contains(&"pluperfect".to_string()) {
+                                        if tags.contains(&"singular".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_pluperfect_singular_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_pluperfect_singular_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_pluperfect_singular_third =
+                                                    form.form.clone();
+                                            }
+                                        } else if tags.contains(&"plural".to_string()) {
+                                            if tags.contains(&"first-person".to_string()) {
+                                                indicative_active_pluperfect_plural_first =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"second-person".to_string()) {
+                                                indicative_active_pluperfect_plural_second =
+                                                    form.form.clone();
+                                            } else if tags.contains(&"third-person".to_string()) {
+                                                indicative_active_pluperfect_plural_third =
+                                                    form.form.clone();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
 
-            
-
-                let real_id = format!("{}_{}",canonical,supine);
-              
+                let real_id = format!("{}_{}", canonical, supine);
 
                 if (canonical != "")
              //   && (genitive != "")
@@ -1008,12 +1103,101 @@ let mut indicative_active_pluperfect_plural_third = String::new();
                     if verb_set.insert(diacritics::remove_diacritics(real_id.as_str())) {
                         // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
                         verb_writer.write_record(&[
-                            diacritics::remove_diacritics(word.as_str()),
+                            diacritics::remove_diacritics(real_id.as_str()),
                             diacritics::remove_diacritics(canonical.as_str()),
                             diacritics::remove_diacritics(present_infinitive.as_str()),
                             diacritics::remove_diacritics(perfect_active.as_str()),
                             diacritics::remove_diacritics(supine.as_str()),
-                          
+                            diacritics::remove_diacritics(
+                                indicative_active_present_singular_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_present_singular_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_present_singular_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_present_plural_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_present_plural_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_present_plural_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_imperfect_singular_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_imperfect_singular_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_imperfect_singular_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_imperfect_plural_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_imperfect_plural_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_imperfect_plural_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_future_singular_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_future_singular_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_future_singular_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_future_plural_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_future_plural_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_future_plural_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_perfect_singular_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_perfect_singular_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_perfect_singular_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_perfect_plural_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_perfect_plural_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_perfect_plural_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_pluperfect_singular_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_pluperfect_singular_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_pluperfect_singular_third.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_pluperfect_plural_first.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_pluperfect_plural_second.as_str(),
+                            ),
+                            diacritics::remove_diacritics(
+                                indicative_active_pluperfect_plural_third.as_str(),
+                            ),
                         ])?;
                     }
                 }
