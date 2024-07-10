@@ -167,12 +167,25 @@ fn main() -> io::Result<()> {
         //do irregular nouns manually
         writer.write_record(&[
             "word",
-            "nominative",
-            "genitive",
+            "nom_sg",
+            "gen_sg",
        
-            "gender",
+            "dat_sg",
+            "acc_sg",
+            "abl_sg",
+            "voc_sg",
+            "loc_sg",
+            "nom_pl",
+            "gen_pl",
+       
+            "dat_pl",
+            "acc_pl",
+            "abl_pl",
+            "voc_pl",
+            "loc_pl",
+
            
-            "pluralia_tantum",
+            "gender",
         ])?;
     
         for line in reader.lines() {
@@ -182,9 +195,29 @@ fn main() -> io::Result<()> {
             let entry: NounEntry = serde_json::from_str(&line)?;
             println!("SERIALIZNG DONE");
             let word = entry.word.clone();
-            let mut nominative = String::new();
-            let mut genitive = String::new();
+            let mut nom_sg = String::new();
+            let mut gen_sg = String::new();
+            let mut dat_sg = String::new();
+            let mut acc_sg = String::new();
+            let mut abl_sg = String::new();
+            let mut voc_sg = String::new();
+            let mut loc_sg = String::new();
+            let mut nom_pl = String::new();
+            let mut gen_pl = String::new();
+            let mut dat_pl = String::new();
+            let mut acc_pl = String::new();
+            let mut abl_pl = String::new();
+            let mut voc_pl = String::new();
+            let mut loc_pl = String::new();
+            
+
+
             let mut gender = String::new();
+         
+         
+
+            
+           
     
       
             let mut pluralia_tantum = String::from("fa");
@@ -192,45 +225,96 @@ fn main() -> io::Result<()> {
             if !word.contains(" ") {
                 for form in &entry.forms {
                     if let Some(tags) = &form.tags {
-                        if tags.contains(&"nominative".to_string())
-                            && tags.contains(&"singular".to_string())
-                        {
-                            if nominative == "" {
-                                nominative = form.form.clone();
+                        if tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if nom_sg == "" {
+                                nom_sg = form.form.clone();
                             }
                         }
-                        if tags.contains(&"genitive".to_string())
-                            && tags.contains(&"singular".to_string())
-                        {
-                            if genitive == "" {
-                                genitive = form.form.clone();
+                        if tags.contains(&"genitive".to_string()) && tags.contains(&"singular".to_string()) {
+                            if gen_sg == "" {
+                                gen_sg = form.form.clone();
                             }
                         }
+                        if tags.contains(&"dative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if dat_sg == "" {
+                                dat_sg = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"accusative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if acc_sg == "" {
+                                acc_sg = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"ablative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if abl_sg == "" {
+                                abl_sg = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"vocative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if voc_sg == "" {
+                                voc_sg = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"locative".to_string()) && tags.contains(&"singular".to_string()) {
+                            if loc_sg == "" {
+                                loc_sg = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"nominative".to_string()) && tags.contains(&"plural".to_string()) {
+                            if nom_pl == "" {
+                                nom_pl = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"genitive".to_string()) && tags.contains(&"plural".to_string()) {
+                            if gen_pl == "" {
+                                gen_pl = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"dative".to_string()) && tags.contains(&"plural".to_string()) {
+                            if dat_pl == "" {
+                                dat_pl = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"accusative".to_string()) && tags.contains(&"plural".to_string()) {
+                            if acc_pl == "" {
+                                acc_pl = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"ablative".to_string()) && tags.contains(&"plural".to_string()) {
+                            if abl_pl == "" {
+                                abl_pl = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"vocative".to_string()) && tags.contains(&"plural".to_string()) {
+                            if voc_pl == "" {
+                                voc_pl = form.form.clone();
+                            }
+                        }
+                        if tags.contains(&"locative".to_string()) && tags.contains(&"plural".to_string()) {
+                            if loc_pl == "" {
+                                loc_pl = form.form.clone();
+                            }
+                        }
+                        
                     }
                 }
     
-                if (nominative == "") && (genitive == "") {
-                    pluralia_tantum = "tr".into();
-    
-                    for form in &entry.forms {
-                        if let Some(tags) = &form.tags {
-                            if tags.contains(&"nominative".to_string())
-                                && tags.contains(&"plural".to_string())
-                            {
-                                if nominative == "" {
-                                    nominative = form.form.clone();
-                                }
-                            }
-                            if tags.contains(&"genitive".to_string())
-                                && tags.contains(&"plural".to_string())
-                            {
-                                if genitive == "" {
-                                    genitive = form.form.clone();
-                                }
-                            }
-                        }
-                    }
-                }
+                nom_sg = diacritics::remove_diacritics(nom_sg.as_str());
+                gen_sg = diacritics::remove_diacritics(gen_sg.as_str());
+                dat_sg = diacritics::remove_diacritics(dat_sg.as_str());
+                acc_sg = diacritics::remove_diacritics(acc_sg.as_str());
+                abl_sg = diacritics::remove_diacritics(abl_sg.as_str());
+                voc_sg = diacritics::remove_diacritics(voc_sg.as_str());
+                loc_sg = diacritics::remove_diacritics(loc_sg.as_str());
+                nom_pl = diacritics::remove_diacritics(nom_pl.as_str());
+                gen_pl = diacritics::remove_diacritics(gen_pl.as_str());
+                dat_pl = diacritics::remove_diacritics(dat_pl.as_str());
+                acc_pl = diacritics::remove_diacritics(acc_pl.as_str());
+                abl_pl = diacritics::remove_diacritics(abl_pl.as_str());
+                voc_pl = diacritics::remove_diacritics(voc_pl.as_str());
+                loc_pl = diacritics::remove_diacritics(loc_pl.as_str());
+                
+            
     
                 if line.contains("Latin masculine nouns") {
                     gender.push_str("m");
@@ -256,20 +340,21 @@ fn main() -> io::Result<()> {
     
              
     
-                let plain_gen = diacritics::remove_diacritics(genitive.as_str());
-                let plain_nom = diacritics::remove_diacritics(nominative.as_str());
+            
     
-                let real_id = format!("{}{}", plain_nom, plain_gen);
-                let mut insert_id = format!("{}", plain_nom);
-    
+                let real_id = format!("{}{}", nom_sg, gen_sg);
+                let mut insert_id = format!("{}", nom_sg);
+
+              
+               
              
     
-                if (nominative != "")
-                    && (genitive != "")
-                    && (nominative != "-")
-                    && (genitive != "-")
-                    && !word.contains("-")
+                if (nom_sg != "")
+                    && (gen_sg != "")
+                   
+                    && !insert_id.contains("-")
                 {
+                  
 
                     let unique_word = word_set.insert(real_id.clone());
                     let unique_insert = input_set.insert(insert_id.clone());
@@ -279,28 +364,52 @@ fn main() -> io::Result<()> {
                         // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
                         writer.write_record(&[
                             diacritics::remove_diacritics(insert_id.as_str()),
-                            diacritics::remove_diacritics(nominative.as_str()),
-                            diacritics::remove_diacritics(genitive.as_str()),
+                            nom_sg,
+                            gen_sg,
+                            dat_sg,
+                            acc_sg,
+                            abl_sg,
+                            voc_sg,
+                            loc_sg,
+                            nom_pl,
+                            gen_pl,
+                            dat_pl,
+                            acc_pl,
+                            abl_pl,
+                            voc_pl,
+                            loc_pl,
+                            
                        
                             gender,
                  
-                            pluralia_tantum,
+                         
                         ])?;
                     }
                     else if unique_word && !unique_insert {
-                        insert_id = format!("{}{}", plain_nom, 2);
+                        insert_id = format!("{}{}", nom_sg, 2);
 
 
                         if input_set.insert(insert_id.clone()) {
 
                             writer.write_record(&[
                                 diacritics::remove_diacritics(insert_id.as_str()),
-                                diacritics::remove_diacritics(nominative.as_str()),
-                                diacritics::remove_diacritics(genitive.as_str()),
+                                nom_sg,
+                                gen_sg,
+                                dat_sg,
+                                acc_sg,
+                                abl_sg,
+                                voc_sg,
+                                loc_sg,
+                                nom_pl,
+                                gen_pl,
+                                dat_pl,
+                                acc_pl,
+                                abl_pl,
+                                voc_pl,
+                                loc_pl,
+                                
                            
                                 gender,
-                     
-                                pluralia_tantum,
                             ])?;
                         }
 
@@ -332,13 +441,42 @@ fn main() -> io::Result<()> {
   let mut writer = csv::Writer::from_path("adjectives.csv")?;
   writer.write_record(&[
       "word",
-      "feminine",
-      "neuter",
+     
       "comparative",
       "superlative",
       "adverb",
-      "declension",
-      "adj_stem",
+      "nom_sg_masc",
+"gen_sg_masc",
+"dat_sg_masc",
+"acc_sg_masc",
+"abl_sg_masc",
+"nom_sg_fem",
+"gen_sg_fem",
+"dat_sg_fem",
+"acc_sg_fem",
+"abl_sg_fem",
+"nom_sg_neut",
+"gen_sg_neut",
+"dat_sg_neut",
+"acc_sg_neut",
+"abl_sg_neut",
+"nom_pl_masc",
+"gen_pl_masc",
+"dat_pl_masc",
+"acc_pl_masc",
+"abl_pl_masc",
+"nom_pl_fem",
+"gen_pl_fem",
+"dat_pl_fem",
+"acc_pl_fem",
+"abl_pl_fem",
+"nom_pl_neut",
+"gen_pl_neut",
+"dat_pl_neut",
+"acc_pl_neut",
+"abl_pl_neut",
+
+    
   ])?;
 
   for line in reader.lines() {
@@ -349,69 +487,160 @@ fn main() -> io::Result<()> {
       println!("SERIALIZNG ADJECTIVE DONE");
 
       let mut word = entry.word.clone();
-      let mut genitive = String::new();
-      let mut declension = String::new();
-      let mut feminine = String::new();
-      let mut neuter = String::new();
+  
+   
       let mut comparative = String::new();
       let mut superlative = String::new();
       let mut adverb = String::new();
+
+
+
+      let mut nom_sg_masc = String::new();
+      let mut gen_sg_masc = String::new();
+      let mut dat_sg_masc = String::new();
+      let mut acc_sg_masc = String::new();
+      let mut abl_sg_masc = String::new();
+      
+      let mut nom_sg_fem = String::new();
+      let mut gen_sg_fem = String::new();
+      let mut dat_sg_fem = String::new();
+      let mut acc_sg_fem = String::new();
+      let mut abl_sg_fem = String::new();
+      
+      let mut nom_sg_neut = String::new();
+      let mut gen_sg_neut = String::new();
+      let mut dat_sg_neut = String::new();
+      let mut acc_sg_neut = String::new();
+      let mut abl_sg_neut = String::new();
+      
+      let mut nom_pl_masc = String::new();
+      let mut gen_pl_masc = String::new();
+      let mut dat_pl_masc = String::new();
+      let mut acc_pl_masc = String::new();
+      let mut abl_pl_masc = String::new();
+      
+      let mut nom_pl_fem = String::new();
+      let mut gen_pl_fem = String::new();
+      let mut dat_pl_fem = String::new();
+      let mut acc_pl_fem = String::new();
+      let mut abl_pl_fem = String::new();
+      
+      let mut nom_pl_neut = String::new();
+      let mut gen_pl_neut = String::new();
+      let mut dat_pl_neut = String::new();
+      let mut acc_pl_neut = String::new();
+      let mut abl_pl_neut = String::new();
+      
+
+
 
       if let Some(forms) = entry.forms {
           for form in forms {
               if let Some(source) = &form.source {
                   if source == "declension" || source == "inflection" {
                       if let Some(tags) = &form.tags {
-                          if tags.contains(&"feminine".to_string())
-                              && tags.contains(&"nominative".to_string())
-                              && tags.contains(&"singular".to_string())
-                          {
-                              feminine = form.form.clone();
-                          }
-                          if tags.contains(&"neuter".to_string())
-                              && tags.contains(&"nominative".to_string())
-                              && tags.contains(&"singular".to_string())
-                          {
-                              neuter = form.form.clone();
-                          }
-                          if tags.contains(&"masculine".to_string())
-                              && tags.contains(&"genitive".to_string())
-                              && tags.contains(&"singular".to_string())
-                          {
-                              genitive = form.form.clone();
-                          }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                            nom_sg_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"genitive".to_string()) && tags.contains(&"singular".to_string()) {
+                            gen_sg_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"dative".to_string()) && tags.contains(&"singular".to_string()) {
+                            dat_sg_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"accusative".to_string()) && tags.contains(&"singular".to_string()) {
+                            acc_sg_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"ablative".to_string()) && tags.contains(&"singular".to_string()) {
+                            abl_sg_masc = form.form.clone();
+                        }
+                        
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                            nom_sg_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"genitive".to_string()) && tags.contains(&"singular".to_string()) {
+                            gen_sg_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"dative".to_string()) && tags.contains(&"singular".to_string()) {
+                            dat_sg_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"accusative".to_string()) && tags.contains(&"singular".to_string()) {
+                            acc_sg_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"ablative".to_string()) && tags.contains(&"singular".to_string()) {
+                            abl_sg_fem = form.form.clone();
+                        }
+                        
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"singular".to_string()) {
+                            nom_sg_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"genitive".to_string()) && tags.contains(&"singular".to_string()) {
+                            gen_sg_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"dative".to_string()) && tags.contains(&"singular".to_string()) {
+                            dat_sg_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"accusative".to_string()) && tags.contains(&"singular".to_string()) {
+                            acc_sg_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"ablative".to_string()) && tags.contains(&"singular".to_string()) {
+                            abl_sg_neut = form.form.clone();
+                        }
+                        
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"plural".to_string()) {
+                            nom_pl_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"genitive".to_string()) && tags.contains(&"plural".to_string()) {
+                            gen_pl_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"dative".to_string()) && tags.contains(&"plural".to_string()) {
+                            dat_pl_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"accusative".to_string()) && tags.contains(&"plural".to_string()) {
+                            acc_pl_masc = form.form.clone();
+                        }
+                        if tags.contains(&"masculine".to_string()) && tags.contains(&"ablative".to_string()) && tags.contains(&"plural".to_string()) {
+                            abl_pl_masc = form.form.clone();
+                        }
+                        
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"plural".to_string()) {
+                            nom_pl_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"genitive".to_string()) && tags.contains(&"plural".to_string()) {
+                            gen_pl_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"dative".to_string()) && tags.contains(&"plural".to_string()) {
+                            dat_pl_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"accusative".to_string()) && tags.contains(&"plural".to_string()) {
+                            acc_pl_fem = form.form.clone();
+                        }
+                        if tags.contains(&"feminine".to_string()) && tags.contains(&"ablative".to_string()) && tags.contains(&"plural".to_string()) {
+                            abl_pl_fem = form.form.clone();
+                        }
+                        
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"nominative".to_string()) && tags.contains(&"plural".to_string()) {
+                            nom_pl_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"genitive".to_string()) && tags.contains(&"plural".to_string()) {
+                            gen_pl_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"dative".to_string()) && tags.contains(&"plural".to_string()) {
+                            dat_pl_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"accusative".to_string()) && tags.contains(&"plural".to_string()) {
+                            acc_pl_neut = form.form.clone();
+                        }
+                        if tags.contains(&"neuter".to_string()) && tags.contains(&"ablative".to_string()) && tags.contains(&"plural".to_string()) {
+                            abl_pl_neut = form.form.clone();
+                        }
+                        
                       }
                   }
-              } else {
-                  if let Some(tags) = &form.tags {
-                      if tags.contains(&"feminine".to_string()) && tags.len() == 1 {
-                          feminine = form.form.clone();
-                      }
-                      if tags.contains(&"neuter".to_string()) && tags.len() == 1 {
-                          neuter = form.form.clone();
-                      }
-                  }
-              }
+              } 
           }
 
-          if line.contains("Latin third declension adjectives of one termination") {
-              feminine = word.clone();
-              neuter = word.clone();
-          }
-
-          if line.contains("Latin third declension adjectives of two terminations") {
-              feminine = word.clone();
-          }
-
-          if line.contains("Latin third declension adjectives") {
-              declension = "3".to_string();
-          } else if line.contains("Latin first declension adjectives") {
-              declension = "1".to_string();
-          } else if line.contains("Latin second declension adjectives") {
-              declension = "2".to_string();
-          } else {
-              declension = "12".to_string();
-          }
+         
 
           if let Some(ht) = entry.head_templates {
               if let Some(head_template) = ht.get(0) {
@@ -427,36 +656,71 @@ fn main() -> io::Result<()> {
               }
           }
 
-          if feminine != "" && neuter != "" && genitive != "" {
+          if nom_sg_fem != "" && nom_sg_neut != "" && gen_sg_masc != "" {
               //gen stem
 
-              let original_gen = genitive.clone();
+              let original_gen = gen_sg_masc.clone();
               word = diacritics::remove_diacritics(word.as_str());
-              genitive = diacritics::remove_diacritics(genitive.as_str());
-              feminine = diacritics::remove_diacritics(feminine.as_str());
-              neuter = diacritics::remove_diacritics(neuter.as_str());
+             
               comparative = diacritics::remove_diacritics(comparative.as_str());
               superlative = diacritics::remove_diacritics(superlative.as_str());
               adverb = diacritics::remove_diacritics(adverb.as_str());
-              let mut adj_stem = genitive.clone();
+              nom_sg_masc = diacritics::remove_diacritics(nom_sg_masc.as_str());
+gen_sg_masc = diacritics::remove_diacritics(gen_sg_masc.as_str());
+dat_sg_masc = diacritics::remove_diacritics(dat_sg_masc.as_str());
+acc_sg_masc = diacritics::remove_diacritics(acc_sg_masc.as_str());
+abl_sg_masc = diacritics::remove_diacritics(abl_sg_masc.as_str());
+
+nom_sg_fem = diacritics::remove_diacritics(nom_sg_fem.as_str());
+gen_sg_fem = diacritics::remove_diacritics(gen_sg_fem.as_str());
+dat_sg_fem = diacritics::remove_diacritics(dat_sg_fem.as_str());
+acc_sg_fem = diacritics::remove_diacritics(acc_sg_fem.as_str());
+abl_sg_fem = diacritics::remove_diacritics(abl_sg_fem.as_str());
+
+nom_sg_neut = diacritics::remove_diacritics(nom_sg_neut.as_str());
+gen_sg_neut = diacritics::remove_diacritics(gen_sg_neut.as_str());
+dat_sg_neut = diacritics::remove_diacritics(dat_sg_neut.as_str());
+acc_sg_neut = diacritics::remove_diacritics(acc_sg_neut.as_str());
+abl_sg_neut = diacritics::remove_diacritics(abl_sg_neut.as_str());
+
+nom_pl_masc = diacritics::remove_diacritics(nom_pl_masc.as_str());
+gen_pl_masc = diacritics::remove_diacritics(gen_pl_masc.as_str());
+dat_pl_masc = diacritics::remove_diacritics(dat_pl_masc.as_str());
+acc_pl_masc = diacritics::remove_diacritics(acc_pl_masc.as_str());
+abl_pl_masc = diacritics::remove_diacritics(abl_pl_masc.as_str());
+
+nom_pl_fem = diacritics::remove_diacritics(nom_pl_fem.as_str());
+gen_pl_fem = diacritics::remove_diacritics(gen_pl_fem.as_str());
+dat_pl_fem = diacritics::remove_diacritics(dat_pl_fem.as_str());
+acc_pl_fem = diacritics::remove_diacritics(acc_pl_fem.as_str());
+abl_pl_fem = diacritics::remove_diacritics(abl_pl_fem.as_str());
+
+nom_pl_neut = diacritics::remove_diacritics(nom_pl_neut.as_str());
+gen_pl_neut = diacritics::remove_diacritics(gen_pl_neut.as_str());
+dat_pl_neut = diacritics::remove_diacritics(dat_pl_neut.as_str());
+acc_pl_neut = diacritics::remove_diacritics(acc_pl_neut.as_str());
+abl_pl_neut = diacritics::remove_diacritics(abl_pl_neut.as_str());
+
+
+              let mut adj_stem = gen_sg_masc.clone();
               println!("{:#?}", adj_stem);
 
               if original_gen.ends_with("ī̆us") {
                   adj_stem.pop();
                   adj_stem.pop();
                   adj_stem.pop();
-              } else if genitive.ends_with("i") {
+              } else if gen_sg_masc.ends_with("i") {
                   adj_stem.pop();
-              } else if genitive.ends_with("ae") {
-                  adj_stem.pop();
-                  adj_stem.pop();
-              } else if genitive.ends_with("is") {
+              } else if gen_sg_masc.ends_with("ae") {
                   adj_stem.pop();
                   adj_stem.pop();
-              } else if genitive.ends_with("us") {
+              } else if gen_sg_masc.ends_with("is") {
                   adj_stem.pop();
                   adj_stem.pop();
-              } else if genitive.ends_with("os") {
+              } else if gen_sg_masc.ends_with("us") {
+                  adj_stem.pop();
+                  adj_stem.pop();
+              } else if gen_sg_masc.ends_with("os") {
                   adj_stem.pop();
                   adj_stem.pop();
               } else {
@@ -487,13 +751,42 @@ fn main() -> io::Result<()> {
               if adj_set.insert(word.clone()) {
                   writer.write_record(&[
                       word,
-                      feminine,
-                      neuter,
+                    
                       comparative,
                       superlative,
                       adverb,
-                      declension,
-                      adj_stem,
+                      nom_sg_masc,
+                      gen_sg_masc,
+                      dat_sg_masc,
+                      acc_sg_masc,
+                      abl_sg_masc,
+                      nom_sg_fem,
+                      gen_sg_fem,
+                      dat_sg_fem,
+                      acc_sg_fem,
+                      abl_sg_fem,
+                      nom_sg_neut,
+                      gen_sg_neut,
+                      dat_sg_neut,
+                      acc_sg_neut,
+                      abl_sg_neut,
+                      nom_pl_masc,
+                      gen_pl_masc,
+                      dat_pl_masc,
+                      acc_pl_masc,
+                      abl_pl_masc,
+                      nom_pl_fem,
+                      gen_pl_fem,
+                      dat_pl_fem,
+                      acc_pl_fem,
+                      abl_pl_fem,
+                      nom_pl_neut,
+                      gen_pl_neut,
+                      dat_pl_neut,
+                      acc_pl_neut,
+                      abl_pl_neut,
+                      
+                  
                   ])?;
               }
           }
