@@ -856,8 +856,7 @@ fn main() -> io::Result<()> {
             "present_infinitive",
             "perfect_active",
             "supine",
-            "conjugation",
-            "irregular",
+       
         ])?;
 
         for line in verb_reader.lines() {
@@ -871,8 +870,7 @@ fn main() -> io::Result<()> {
             let mut present_infinitive = String::new();
             let mut perfect_active = String::new();
             let mut supine = String::new();
-            let mut conjugation = String::from("");
-            let mut irregular = String::from("fa");
+           
 
             if !canonical.contains(" ") {
                 if let Some(forms) = entry.forms {
@@ -905,34 +903,10 @@ fn main() -> io::Result<()> {
                     }
                 }
 
-                if line.contains("Latin first conjugation verbs") {
-                    conjugation.push_str("1");
-                } else if line.contains("Latin second conjugation verbs") {
-                    conjugation.push_str("2");
-                } else if line.contains("Latin third conjugation verbs") {
-                    conjugation.push_str("3");
-                } else if line.contains("Latin fourth conjugation verbs") {
-                    conjugation.push_str("4");
-                } else {
-                    conjugation.push_str("i");
-                }
+            
 
-                if line.contains("Latin irregular verbs") {
-                    irregular = String::from("tr");
-                }
-
-                if line.contains("Latin verbs with missing supine stem") {
-                    supine = String::from("MISSING");
-                }
-                if line.contains("Latin verbs with missing perfect stem") {
-                    perfect_active = String::from("MISSING");
-                }
-                if supine == "" {
-                    supine = String::from("MISSING");
-                }
-                if perfect_active == "" {
-                    perfect_active = String::from("MISSING");
-                }
+                let real_id = format!("{}_{}",canonical,supine);
+              
 
                 if (canonical != "")
              //   && (genitive != "")
@@ -941,7 +915,7 @@ fn main() -> io::Result<()> {
                 && !canonical.contains("-")
                 && !canonical.contains(" ")
                 {
-                    if verb_set.insert(diacritics::remove_diacritics(word.as_str())) {
+                    if verb_set.insert(diacritics::remove_diacritics(real_id.as_str())) {
                         // i am removing all diacritics to avoid confusion because some words will be wrongly marked otherwise
                         verb_writer.write_record(&[
                             diacritics::remove_diacritics(word.as_str()),
@@ -949,8 +923,7 @@ fn main() -> io::Result<()> {
                             diacritics::remove_diacritics(present_infinitive.as_str()),
                             diacritics::remove_diacritics(perfect_active.as_str()),
                             diacritics::remove_diacritics(supine.as_str()),
-                            conjugation,
-                            irregular,
+                          
                         ])?;
                     }
                 }
